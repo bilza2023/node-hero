@@ -1,26 +1,26 @@
 const express = require('express');
-const nunjucks = require('nunjucks');
 const path = require('path');
-require('dotenv').config();
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/auth');
+const uploadRoutes = require('./routes/upload');
+const indexRoutes = require('./routes/index');
+
+dotenv.config();
 
 const app = express();
 
-// Templating
-nunjucks.configure('views', {
-  autoescape: true,
-  express: app,
-});
-
-// Middleware
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// Routes
-const indexRoutes = require('./routes/index');
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.use('/', indexRoutes);
+app.use('/', authRoutes);
+app.use('/', uploadRoutes);
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Node Hero running on http://localhost:${PORT}`);
 });

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Uploaded Files</title>
+</head>
+<body>
+  <h2>All Uploaded Files and Images</h2>
+  <ul>
+    <% uploads.forEach(upload => { %>
+      <li>
+        <strong><%= upload.original %></strong>
+        (type: <%= upload.type %>, by: <%= upload.uploader %>)
+        – <a href="/uploads/<%= upload.type === 'file' ? 'files' : 'images' %>/<%= upload.name %>">Download</a>
+      </li>
+    <% }) %>
+  </ul>
+</body>
+</html>

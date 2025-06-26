@@ -1,0 +1,20 @@
+[
+  {
+    "id": "u001",
+    "email": "admin@nodehero.com",
+    "password": "$2a$10$JqQCy4tMwH6DwA1X9UVrOeFlQ6RmKJ7eYzyEcm8iU.4usK4c8kqzC",
+    "role": "admin"
+  },
+  {
+    "id": "u002",
+    "email": "user@nodehero.com",
+    "password": "$2a$10$nBWyA.ZuGUuO3r7FYaKz3e8Hw06UtEBKJ5P/CxW9rLsmW7qUMofOm",
+    "role": "user"
+  },
+  {
+    "id": "00u3",
+    "email": "bils32611@gmail.com",
+    "password": "$2b$10$PW1WClUS8h7hTnXS5YAoWeKgqAcBQ46792k7a.6ayw/cHAIHBaYb6",
+    "role": "admin"
+  }
+]
