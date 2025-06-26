@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Gallery</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #ffffff;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    .gallery-item {
+      background-color: #2d2d2d;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .gallery-item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      border: 1px solid #555;
+    }
+
+    .details {
+      font-size: 0.9rem;
+      color: #cccccc;
+    }
+  </style>
+</head>
+<body>
+  <h2>Uploaded Image Gallery</h2>
+  <div class="gallery">
+    <% images.forEach(image => { %>
+      <div class="gallery-item">
+        <img src="/uploads/images/<%= image.name %>" alt="<%= image.original %>">
+        <div class="details"><strong><%= image.original %></strong></div>
+        <div class="details"><%= new Date(image.uploadedAt).toLocaleString() %></div>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>

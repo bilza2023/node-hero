@@ -2,15 +2,63 @@
 <html>
 <head>
   <title>Welcome to Node Hero</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #ffffff;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background-color: #2d2d2d;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      border-color: #888;
+    }
+
+    .card a {
+      color: #00bfff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      display: block;
+    }
+
+    .card a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome to Node Hero!</h1>
-  <ul>
-    <li><a href="/login">Login</a></li>
-    <li><a href="/upload/file">Upload File</a></li>
-    <li><a href="/upload/image">Upload Image</a></li>
-    <li><a href="/uploads">View Uploads</a></li>
-  </ul>
+  <div class="card-grid">
+    <div class="card"><a href="/login">🔐 Login</a></div>
+    <div class="card"><a href="/upload/file">📁 Upload File</a></div>
+    <div class="card"><a href="/upload/image">🖼️ Upload Image</a></div>
+    <div class="card"><a href="/uploads">📄 View Uploads</a></div>
+    <div class="card"><a href="/gallery">🖼️ Image Gallery</a></div>
+  </div>
 </body>
 </html>

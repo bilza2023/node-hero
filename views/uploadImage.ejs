@@ -5,9 +5,40 @@
 </head>
 <body>
   <h2>Upload an Image</h2>
-  <form method="POST" action="/upload/image" enctype="multipart/form-data">
-    <input type="file" name="image" required>
+  <form id="imageForm">
+    <input type="file" name="image" accept=".jpg,.jpeg,.png" required>
     <button type="submit">Upload Image</button>
   </form>
+
+  <script>
+    const form = document.getElementById('imageForm');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("You are not logged in");
+        return;
+      }
+
+      const formData = new FormData(form);
+
+      const res = await fetch('/upload/image', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token
+        },
+        body: formData
+      });
+
+      if (res.ok) {
+        alert("Image upload successful");
+      } else {
+        const msg = await res.text();
+        alert("Upload failed: " + msg);
+      }
+    });
+  </script>
 </body>
 </html>

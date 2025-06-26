@@ -24,3 +24,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Node Hero running on http://localhost:${PORT}`);
 });
+
+const galleryRoutes = require('./routes/gallery');
+app.use('/', galleryRoutes);
