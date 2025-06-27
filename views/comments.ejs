@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comments</title>
+  <style>
+    body {
+      background: #1e1e1e;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: #2d2d2d;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background: #00bfff;
+      color: #000;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .comment {
+      border: 1px solid #444;
+      background: #2d2d2d;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
+    }
+
+    .timestamp {
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <h2>Add a Comment</h2>
+  <form method="POST" action="/comments">
+    <textarea name="message" required></textarea>
+    <button type="submit">Save</button>
+  </form>
+
+  <h3>Previous Comments</h3>
+  <% comments.forEach(c => { %>
+    <div class="comment">
+      <div class="timestamp"><%= new Date(c.createdAt).toLocaleString() %></div>
+      <div><%= c.message %></div>
+    </div>
+  <% }) %>
+</body>
+</html>

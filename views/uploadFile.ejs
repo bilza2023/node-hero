@@ -2,13 +2,66 @@
 <html>
 <head>
   <title>Upload File</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .upload-box {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #2d2d2d;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    input[type="file"] {
+      display: block;
+      width: 100%;
+      margin-bottom: 1.5rem;
+      background: #1e1e1e;
+      color: #fff;
+      padding: 0.6rem;
+      border: 1px solid #555;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 0.7rem 2rem;
+      background-color: #00bfff;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #009fd1;
+    }
+  </style>
 </head>
 <body>
+  <%- include('partials/nav') %>
+
   <h2>Upload a File</h2>
-  <form id="uploadForm">
-    <input type="file" name="file" accept=".pdf,.docx,.doc,.txt,.zip,.csv" required>
-    <button type="submit">Upload File</button>
-  </form>
+  <div class="upload-box">
+    <form id="uploadForm">
+      <input type="file" name="file" accept=".pdf,.docx,.doc,.txt,.zip,.csv" required>
+      <button type="submit">Upload File</button>
+    </form>
+  </div>
 
   <script>
     const form = document.getElementById('uploadForm');
@@ -35,7 +88,6 @@
       if (res.ok) {
         alert("Upload successful");
       } else {
-        // always read as text so JSON parse errors can't occur
         const msg = await res.text();
         alert("Upload failed: " + msg);
       }

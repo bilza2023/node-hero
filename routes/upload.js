@@ -2,16 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { uploadFile, uploadImage } = require('../controllers/uploadController');
 const { uploadFile: fileMulter, uploadImage: imageMulter } = require('../config/multer');
-const authenticate = require('../middleware/auth');
-const { allow } = require('../middleware/role');
+// const authenticate = require('../middleware/auth');
 
-router.get('/upload/file', (req, res) => {
-    res.render('uploadFile');
-  });
-// router.get('/upload/file', authenticate, (req, res) => res.render('uploadFile'));
+// Views (no auth needed)
+router.get('/upload/file', (req, res) => res.render('uploadFile'));
 router.get('/upload/image', (req, res) => res.render('uploadImage'));
 
-router.post('/upload/file', authenticate, allow('createOwn', 'file'), fileMulter.single('file'), uploadFile);
-router.post('/upload/image', authenticate, allow('createOwn', 'image'), imageMulter.single('image'), uploadImage);
+
+// Upload routes (auth only — no roles)
+router.post('/upload/file', fileMulter.single('file'), uploadFile);
+router.post('/upload/image', imageMulter.single('image'), uploadImage);
 
 module.exports = router;

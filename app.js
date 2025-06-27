@@ -27,3 +27,7 @@ app.listen(PORT, () => {
 
 const galleryRoutes = require('./routes/gallery');
 app.use('/', galleryRoutes);
+
+const commentRoutes = require('./routes/comments');
+app.use('/', commentRoutes);
+
