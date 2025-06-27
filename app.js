@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const uploadRoutes = require('./routes/upload');
 const indexRoutes = require('./routes/index');
+const syllabusRoutes = require('./routes/syllabus');
+const galleryRoutes = require('./routes/gallery');
+const commentRoutes = require('./routes/comments');
 
 dotenv.config();
 
@@ -19,15 +22,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/', uploadRoutes);
+app.use('/', syllabusRoutes);
+app.use('/', commentRoutes);
+app.use('/', galleryRoutes);
 
+///////////////////////////////////////////////////////////
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Node Hero running on http://localhost:${PORT}`);
 });
-
-const galleryRoutes = require('./routes/gallery');
-app.use('/', galleryRoutes);
-
-const commentRoutes = require('./routes/comments');
-app.use('/', commentRoutes);
-

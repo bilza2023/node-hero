@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<h1>➕ Add Chapter to: fbise9physics</h1>
+
+<form method="POST" action="/syllabus/fbise9physics/chapter/new">
+  <label>Chapter ID:</label><br>
+  <input name="chapter_id" required><br><br>
+
+  <label>Title:</label><br>
+  <input name="title" required><br><br>
+
+  <label>Order (optional):</label><br>
+  <input name="order"><br><br>
+
+  <button type="submit">Create Chapter</button>
+</form>
+
+<a href="/syllabus/fbise9physics">← Back to Tree View</a>

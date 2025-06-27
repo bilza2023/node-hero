@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<h1>➕ Create New Syllabus (Tcode)</h1>
+
+<form method="POST" action="/syllabus/new">
+  <label>Tcode ID:</label><br>
+  <input name="tcode_id" required><br><br>
+
+  <label>Title:</label><br>
+  <input name="title" required><br><br>
+
+  <label>Subject Code (optional):</label><br>
+  <input name="subject_code"><br><br>
+
+  <button type="submit">Create</button>
+</form>
+
+<a href="/syllabus">← Back to Tcodes</a>

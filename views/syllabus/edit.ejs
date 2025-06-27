@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<h1>✏️ Edit Syllabus: fbise9physics</h1>
+
+<form method="POST" action="/syllabus/fbise9physics/edit">
+  <label>Title:</label><br>
+  <input name="title" value="Physics Grade 9"><br><br>
+
+  <label>Subject Code (optional):</label><br>
+  <input name="subject_code" value="phy9"><br><br>
+
+  <button type="submit">Save Changes</button>
+</form>
+
+<a href="/syllabus/fbise9physics">← Back to Tree View</a>

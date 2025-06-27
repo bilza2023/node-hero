@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<%- include('../partials/flash') %>
+
+<h1>➕ Add Question to: ex1_intro</h1>
+
+<form method="POST" action="/syllabus/fbise9physics/question/new">
+  <label>Question Filename:</label><br>
+  <input name="filename" required><br><br>
+
+  <label>Preview Text (optional):</label><br>
+  <input name="text"><br><br>
+
+  <input type="hidden" name="chapter" value="ch1_motion">
+  <input type="hidden" name="exercise" value="ex1_intro">
+
+  <button type="submit">Create Question</button>
+</form>
+
+<a href="/syllabus/fbise9physics">← Back to Tree View</a>
