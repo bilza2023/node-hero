@@ -3,6 +3,10 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const router = express.Router();
+const syllabusRoot = path.join(__dirname, '../data/syllabus');
+const { NewTcodeSchema } = require('../prisma/zodSchemas');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 //////////////////////////////////////////////////////////
 // ✅ Helper: Write Tcode File (taxonomy)
@@ -26,11 +30,55 @@ function writeTcodeFile({ tcode_id, title, subject_code }) {
   const questionsPath = path.join(dir, `${tcode_id}_questions.js`);
   fs.writeFileSync(questionsPath, `export const ${tcode_id}Questions = []\n`, 'utf-8');
 }
+// ✅ GET /syllabus — Load from tcodes.json instead of scanning folders
+router.get('/syllabus', (req, res) => {
+    // console.log('✅ GET /syllabus route entered');
+    const filePath = path.join(__dirname, '../data/syllabus/tcodes.json');
 
+    let tcodes = [];
+  
+    try {
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      tcodes = JSON.parse(raw);
+      console.log(`🧾 Loaded ${tcodes.length} tcodes`);
+    } catch (err) {
+      console.error('❌ Failed to read tcodes.json', err);
+    }
+  
+    res.render('syllabus/index', { tcodes });
+  });
+  
 //////////////////////////////////////////////////////////
-// ✅ GET Routes
-router.get('/syllabus', (req, res) => res.render('syllabus/index'));
-router.get('/syllabus/new', (req, res) => res.render('syllabus/new'));
+router.post('/syllabus/new', async (req, res) => {
+  const result = NewTcodeSchema.safeParse(req.body);
+
+  if (!result.success) {
+    req.session.flash = { error: result.error.errors[0].message };
+    return res.redirect('/syllabus/new');
+  }
+
+  const { tcodeName, title, description, image } = result.data;
+
+  try {
+    const exists = await prisma.tcode.findUnique({ where: { tcodeName } });
+    if (exists) {
+      req.session.flash = { error: `Tcode '${tcodeName}' already exists.` };
+      return res.redirect('/syllabus/new');
+    }
+
+    await prisma.tcode.create({
+      data: { tcodeName, title, description, image }
+    });
+
+    req.session.flash = { success: 'Syllabus created successfully.' };
+    res.redirect(`/syllabus/${tcodeName}`);
+  } catch (err) {
+    console.error('❌ Failed to insert tcode:', err);
+    req.session.flash = { error: 'Database error. Try again.' };
+    res.redirect('/syllabus/new');
+  }
+});
+//////////////////////////////////////////////////////////
 router.get('/syllabus/:id', (req, res) => res.render('syllabus/tree'));
 router.get('/syllabus/:id/edit', (req, res) => res.render('syllabus/edit'));
 router.get('/syllabus/:id/chapter/new', (req, res) => res.render('syllabus/chapter_new'));
@@ -41,26 +89,6 @@ router.get('/syllabus/:id/question/new', (req, res) => res.render('syllabus/ques
 router.get('/syllabus/:id/question/:qid/edit', (req, res) => res.render('syllabus/question_edit'));
 
 //////////////////////////////////////////////////////////
-// ✅ POST /syllabus/new (create tcode)
-router.post('/syllabus/new', (req, res) => {
-  const { tcode_id, title, subject_code } = req.body;
-
-  if (!tcode_id || !title) {
-    req.session.flash = { error: 'Tcode ID and Title are required.' };
-    return res.redirect('/syllabus/new');
-  }
-
-  try {
-    writeTcodeFile({ tcode_id, title, subject_code });
-    req.session.flash = { success: 'Syllabus created successfully.' };
-    res.redirect(`/syllabus/${tcode_id}`);
-  } catch (err) {
-    console.error(err);
-    req.session.flash = { error: 'Failed to create syllabus file.' };
-    res.redirect('/syllabus/new');
-  }
-});
-
 //////////////////////////////////////////////////////////
 // TODO: POST routes for chapter, exercise, question etc.
 // router.post(...);

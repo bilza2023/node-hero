@@ -1,16 +1,80 @@
 <%- include('../partials/header') %>
 <%- include('../partials/flash') %>
 
-<h1>✏️ Edit Syllabus: fbise9physics</h1>
+<style>
+  body {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    font-family: sans-serif;
+  }
 
-<form method="POST" action="/syllabus/fbise9physics/edit">
-  <label>Title:</label><br>
-  <input name="title" value="Physics Grade 9"><br><br>
+  .card {
+    background: #2c2c2c;
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
 
-  <label>Subject Code (optional):</label><br>
-  <input name="subject_code" value="phy9"><br><br>
+  label {
+    display: block;
+    margin-bottom: 1rem;
+  }
 
-  <button type="submit">Save Changes</button>
-</form>
+  input, textarea {
+    width: 100%;
+    padding: 0.6rem;
+    background: #3a3a3a;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    border-radius: 6px;
+  }
 
-<a href="/syllabus/fbise9physics">← Back to Tree View</a>
+  button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #aaa;
+    text-decoration: none;
+  }
+
+  h2 {
+    margin-bottom: 1.5rem;
+    color: #fff;
+  }
+</style>
+
+<div class="card">
+  <h2>✏️ Edit Syllabus: <%= tcode.tcodeName %></h2>
+
+  <form method="POST" action="/syllabus/<%= tcode.tcodeName %>/edit">
+    <label>
+      Title:
+      <input name="title" value="<%= tcode.title %>" required />
+    </label>
+
+    <label>
+      Description (optional):
+      <textarea name="description" rows="3"><%= tcode.description || '' %></textarea>
+    </label>
+
+    <label>
+      Image URL (optional):
+      <input name="image" value="<%= tcode.image || '' %>" />
+    </label>
+
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <a href="/syllabus/<%= tcode.tcodeName %>">← Back to Tree View</a>
+</div>

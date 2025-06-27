@@ -1,24 +1,86 @@
 <%- include('../partials/header') %>
 <%- include('../partials/flash') %>
-<%- include('./partials/tree_nav') %>
 
-<h1>🌳 Tcode Tree View: fbise9physics</h1>
+<style>
+  body {
+    background-color: #1f1f1f;
+    color: #f0f0f0;
+    font-family: system-ui, sans-serif;
+  }
 
-<p>Use this view to manage chapters, exercises, and questions.</p>
+  .card {
+    background: #2c2c2c;
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
 
-<a href="/syllabus/fbise9physics/edit">✏️ Edit Syllabus Info</a><br>
-<a href="/syllabus/fbise9physics/chapter/new">➕ Add Chapter</a>
+  ul { list-style-type: none; padding-left: 1rem; }
+  li { margin-bottom: 0.4rem; }
+  .chapter { font-weight: bold; color: #88e188; }
+  .exercise { margin-left: 1rem; color: #ffc066; }
+  .question { margin-left: 2rem; color: #ddd; font-style: italic; }
 
-<ul>
-  <li>Chapter 1: Motion
+  h2 {
+    margin-bottom: 1.5rem;
+    font-weight: normal;
+    color: #eaeaea;
+  }
+
+  .alert {
+    background: #444;
+    color: #ffc107;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+</style>
+
+<div class="card">
+
+  <div style="margin-bottom: 1rem;">
+    <a href="/chapters/new?tcode=<%= tcode.tcodeName %>" style="color: #6dbf73; font-size: 0.9rem; margin-right: 1.5rem;">
+      ➕ Create New Chapter
+    </a>
+    <a href="/exercises/new?chapter=CHAPTER_ID_HERE" style="color: #6dbf73; font-size: 0.9rem;">
+      ➕ Create New Exercise (select a chapter below)
+    </a>
+  </div>
+  
+
+
+  <h2>📘 Syllabus Tree: <%= tcode.tcodeName %> — <%= tcode.title %></h2>
+
+  <% if (tcode.chapters.length === 0) { %>
+    <div class="alert">No chapters defined yet.</div>
+  <% } else { %>
     <ul>
-      <li>Exercise: Introduction
-        <ul>
-          <li>Question: Define velocity</li>
-        </ul>
-      </li>
+      <% tcode.chapters.forEach(chapter => { %>
+        <li class="chapter">
+          <%= chapter.title %>
+          <ul>
+            <% (chapter.exercises || []).forEach(exercise => { %>
+              <li class="exercise">
+                <%= exercise.title %>
+                <ul>
+                  <% (exercise.questions || []).forEach(question => { %>
+                    <li class="question">
+                      <%= question.title %>
+                    </li>
+                  <% }); %>
+                </ul>
+              </li>
+            <% }); %>
+          </ul>
+        </li>
+      <% }); %>
     </ul>
-  </li>
-</ul>
+  <% } %>
+</div>
 
-<a href="/syllabus">← Back to Tcodes</a>
+<script>
+  const tcode = <%- JSON.stringify(tcode, null, 2) %>;
+  console.log('📦 tcode:', tcode);
+</script>

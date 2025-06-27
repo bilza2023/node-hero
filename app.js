@@ -1,32 +1,55 @@
+require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
+const flash = require('connect-flash');
 const path = require('path');
-const dotenv = require('dotenv');
+const app = express();
+
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+// Session + Flash
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: true }));
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.flash = req.session.flash;
+  delete req.session.flash;
+  next();
+});
+
+// View Engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Routes
+const indexRoutes = require('./routes/index');
 const authRoutes = require('./routes/auth');
 const uploadRoutes = require('./routes/upload');
-const indexRoutes = require('./routes/index');
-const syllabusRoutes = require('./routes/syllabus');
 const galleryRoutes = require('./routes/gallery');
 const commentRoutes = require('./routes/comments');
 
-dotenv.config();
-
-const app = express();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// Modular syllabus routes
+const syllabusTcodeRoutes = require('./routes/syllabus/tcode');
+const syllabusChapterRoutes = require('./routes/syllabus/chapter');
+const syllabusExerciseRoutes = require('./routes/syllabus/exercise');
+const syllabusQuestionRoutes = require('./routes/syllabus/question');
 
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/', uploadRoutes);
-app.use('/', syllabusRoutes);
-app.use('/', commentRoutes);
 app.use('/', galleryRoutes);
+app.use('/', commentRoutes);
 
-///////////////////////////////////////////////////////////
+// Main syllabus module
+app.use('/syllabus', syllabusTcodeRoutes);
+app.use('/syllabus', syllabusChapterRoutes);
+app.use('/syllabus', syllabusExerciseRoutes);
+app.use('/syllabus', syllabusQuestionRoutes);
+
+// Start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Node Hero running on http://localhost:${PORT}`);
