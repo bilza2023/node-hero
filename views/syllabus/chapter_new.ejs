@@ -1,19 +1,96 @@
 <%- include('../partials/header') %>
 <%- include('../partials/flash') %>
 
-<h1>➕ Add Chapter to: fbise9physics</h1>
+<style>
+  body {
+    background-color: #1f1f1f;
+    color: #f0f0f0;
+    font-family: system-ui, sans-serif;
+  }
 
-<form method="POST" action="/syllabus/fbise9physics/chapter/new">
-  <label>Chapter ID:</label><br>
-  <input name="chapter_id" required><br><br>
+  .card {
+    background: #2c2c2c;
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
 
-  <label>Title:</label><br>
-  <input name="title" required><br><br>
+  label {
+    display: block;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
 
-  <label>Order (optional):</label><br>
-  <input name="order"><br><br>
+  input, textarea {
+    width: 100%;
+    padding: 0.6rem;
+    background: #3b3b3b;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
 
-  <button type="submit">Create Chapter</button>
-</form>
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #6dbf73;
+  }
 
-<a href="/syllabus/fbise9physics">← Back to Tree View</a>
+  button {
+    background: #4caf50;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: #bbb;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  h2 {
+    margin-bottom: 1.5rem;
+    font-weight: normal;
+    color: #eaeaea;
+  }
+</style>
+
+<div class="card">
+  <h2>➕ Add Chapter to: <%= tcode.tcodeName %></h2>
+
+  <form method="POST" action="/syllabus/<%= tcode.tcodeName %>/chapter/new">
+    <label>
+      Filename:
+      <input name="filename" required />
+    </label>
+
+    <label>
+      Name:
+      <input name="name" required />
+    </label>
+
+    <label>
+      Description (optional):
+      <input name="description" />
+    </label>
+
+    <label>
+      Image (optional):
+      <input name="image" placeholder="/path/to/image.webp" />
+    </label>
+
+    <button type="submit">Create Chapter</button>
+  </form>
+
+  <a href="/syllabus/<%= tcode.tcodeName %>">← Back to Tree View</a>
+</div>

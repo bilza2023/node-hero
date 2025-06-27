@@ -41,15 +41,10 @@
 <div class="card">
 
   <div style="margin-bottom: 1rem;">
-    <a href="/chapters/new?tcode=<%= tcode.tcodeName %>" style="color: #6dbf73; font-size: 0.9rem; margin-right: 1.5rem;">
+    <a href="/syllabus/<%= tcode.tcodeName %>/chapter/new" style="color: #6dbf73; font-size: 0.9rem; margin-right: 1.5rem;">
       ➕ Create New Chapter
     </a>
-    <a href="/exercises/new?chapter=CHAPTER_ID_HERE" style="color: #6dbf73; font-size: 0.9rem;">
-      ➕ Create New Exercise (select a chapter below)
-    </a>
-  </div>
-  
-
+    
 
   <h2>📘 Syllabus Tree: <%= tcode.tcodeName %> — <%= tcode.title %></h2>
 
