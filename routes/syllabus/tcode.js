@@ -64,15 +64,15 @@ router.get('/:id', async (req, res) => {
         chapters: {
           include: {
             exercises: {
-              include: {
-                questions: true
-              }
+              include: { questions: true },
+              orderBy: { id: 'asc' }
             }
           },
           orderBy: { id: 'asc' }
         }
       }
     });
+    
 
     if (!tcode) return res.status(404).send('Tcode not found');
 

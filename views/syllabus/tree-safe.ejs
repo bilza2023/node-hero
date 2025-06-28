@@ -6,7 +6,7 @@
     background-color: #1f1f1f;
     color: #f0f0f0;
     font-family: system-ui, sans-serif;
-    line-height: 1.6;
+    line-height: 2;
   }
 
   .card {
@@ -83,9 +83,6 @@
 </div>
 
 <script>
-  function toggle(id) {
-    const el = document.getElementById(id);
-    const isHidden = el.style.display === 'none';
-    el.style.display = isHidden ? 'block' : 'none';
-  }
+  const tcode = <%- JSON.stringify(tcode, null, 2) %>;
+  console.log('📦 tcode:', tcode);
 </script>
