@@ -7,6 +7,9 @@
     "dev": "nodemon app.js",
     "test": "jest"
   },
+  "jest": {
+  "testEnvironment": "node"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -26,6 +29,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "jest": "^30.0.3",
     "nodemon": "^3.1.10"
   }

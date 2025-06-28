@@ -26,11 +26,9 @@ model Tcode {
   title       String
   description String?
   image       String?
-
-  chapters    Chapter[]
-
-  @@index([tcodeName])
+  chapters    Chapter[] // relation
 }
+
 
 model Chapter {
   id          Int     @id @default(autoincrement())
