@@ -1,14 +1,24 @@
 const express = require('express');
 const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
 const { NewQuestionSchema } = require('../../prisma/zodSchemas');
-const questionService = require('../../services/questionService');
 
+const prisma = new PrismaClient();
+
+///////////////////////////////////////////////////////////
 // GET /syllabus/question/new?exercise=ID
 router.get('/question/new', async (req, res) => {
   const { exercise } = req.query;
 
   try {
-    const exerciseObj = await questionService.getExerciseFull(exercise);
+    const exerciseObj = await prisma.exercise.findUnique({
+      where: { id: parseInt(exercise) },
+      include: {
+        chapter: {
+          include: { tcode: true }
+        }
+      }
+    });
 
     if (!exerciseObj) {
       return res.status(404).send('Exercise not found.');
@@ -28,6 +38,7 @@ router.get('/question/new', async (req, res) => {
   }
 });
 
+///////////////////////////////////////////////////////////
 // POST /syllabus/question/new
 router.post('/question/new', async (req, res) => {
   const result = NewQuestionSchema.safeParse(req.body);
@@ -37,17 +48,22 @@ router.post('/question/new', async (req, res) => {
   }
 
   try {
-    const exercise = await questionService.getExerciseBasic(result.data.exercise);
+    const exercise = await prisma.exercise.findUnique({
+      where: { id: parseInt(result.data.exercise) }
+    });
+
     if (!exercise) {
       req.session.flash = { error: 'Invalid exercise.' };
       return res.redirect(`/syllabus/question/new?exercise=${result.data.exercise}`);
     }
 
-    await questionService.createQuestion({
-      filename: result.data.filename,
-      name: result.data.name,
-      type: result.data.type,
-      exerciseId: exercise.id
+    await prisma.question.create({
+      data: {
+        filename: result.data.filename,
+        name: result.data.name,
+        type: result.data.type,
+        exerciseId: exercise.id
+      }
     });
 
     req.session.flash = { success: 'Question created.' };
@@ -59,6 +75,7 @@ router.post('/question/new', async (req, res) => {
   }
 });
 
+///////////////////////////////////////////////////////////
 // POST /syllabus/question/:qid/edit
 router.post('/question/:qid/edit', async (req, res) => {
   const result = NewQuestionSchema.safeParse(req.body);
@@ -68,17 +85,23 @@ router.post('/question/:qid/edit', async (req, res) => {
   }
 
   try {
-    const exercise = await questionService.getExerciseBasic(result.data.exercise);
+    const exercise = await prisma.exercise.findUnique({
+      where: { id: parseInt(result.data.exercise) }
+    });
+
     if (!exercise) {
       req.session.flash = { error: 'Invalid exercise.' };
       return res.redirect(`/syllabus/question/${req.params.qid}/edit`);
     }
 
-    await questionService.updateQuestion(req.params.qid, {
-      filename: result.data.filename,
-      name: result.data.name,
-      type: result.data.type,
-      exerciseId: exercise.id
+    await prisma.question.update({
+      where: { id: parseInt(req.params.qid) },
+      data: {
+        filename: result.data.filename,
+        name: result.data.name,
+        type: result.data.type,
+        exerciseId: exercise.id
+      }
     });
 
     req.session.flash = { success: 'Question updated.' };
@@ -90,10 +113,14 @@ router.post('/question/:qid/edit', async (req, res) => {
   }
 });
 
+///////////////////////////////////////////////////////////
 // POST /syllabus/:id/question/:qid/delete
 router.post('/:id/question/:qid/delete', async (req, res) => {
   try {
-    await questionService.deleteQuestion(req.params.qid);
+    await prisma.question.delete({
+      where: { id: parseInt(req.params.qid) }
+    });
+
     req.session.flash = { success: 'Question deleted.' };
     res.redirect(`/syllabus/${req.params.id}`);
   } catch (err) {
