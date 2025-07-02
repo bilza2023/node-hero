@@ -1,68 +1,84 @@
 // services/questionService.js
+
 const prisma = require('../db');
 
-// CREATE
-async function createQuestion(data) {
-  return prisma.question.create({ data });
+// Validate URL-safe and filename-safe format
+function validateFilename(name) {
+  const isValid = /^[a-z0-9_-]+$/.test(name);
+  if (!isValid) {
+    throw new Error('Invalid filename: must be lowercase, URL-safe, and use only a-z, 0-9, -, _');
+  }
 }
 
-// READ ALL
-async function getAllQuestions() {
-  return prisma.question.findMany({
-    include: { exercise: true }
-  });
-}
+// CREATE: Create question under a specific exercise
+async function createQuestion(tcodeName, chapterFilename, exerciseFilename, data) {
+  validateFilename(data.filename);
 
-// READ ONE
-async function getQuestionById(id) {
-  return prisma.question.findUnique({
-    where: { id: parseInt(id, 10) },
-    include: { exercise: true }
-  });
-}
-
-// UPDATE
-async function updateQuestion(id, data) {
-  return prisma.question.update({
-    where: { id: parseInt(id, 10) },
-    data
-  });
-}
-
-// DELETE
-async function deleteQuestion(id) {
-  return prisma.question.delete({
-    where: { id: parseInt(id, 10) }
-  });
-}
-
-// GET EXERCISE with full nesting (used in GET form)
-async function getExerciseFull(exerciseId) {
-  const id = parseInt(exerciseId, 10);
-  return prisma.exercise.findUnique({
-    where: { id },
-    include: {
+  const exercise = await prisma.exercise.findFirst({
+    where: {
+      filename: exerciseFilename,
       chapter: {
-        include: { tcode: true }
+        filename: chapterFilename,
+        tcode: { tcodeName }
       }
+    }
+  });
+
+  if (!exercise) {
+    throw new Error(`Exercise '${exerciseFilename}' not found in '${chapterFilename}'.`);
+  }
+
+  const exists = await prisma.question.findUnique({
+    where: { filename: data.filename }
+  });
+
+  if (exists) {
+    throw new Error(`Question filename '${data.filename}' already exists.`);
+  }
+
+  return prisma.question.create({
+    data: {
+      ...data,
+      exerciseId: exercise.id
     }
   });
 }
 
-// GET EXERCISE basic (used in POSTs)
-async function getExerciseBasic(exerciseId) {
-  const id = parseInt(exerciseId, 10);
-  return prisma.exercise.findUnique({
+// READ: Get question by internal ID
+async function getQuestionById(id) {
+  return prisma.question.findUnique({
     where: { id }
   });
 }
 
+// READ: Get question by its unique string filename
+async function getQuestionByFilename(filename) {
+  return prisma.question.findUnique({
+    where: { filename }
+  });
+}
+
+// UPDATE: Cannot change filename or exerciseId
+async function updateQuestion(id, data) {
+  if ('filename' in data || 'exerciseId' in data) {
+    throw new Error('filename and exerciseId cannot be updated.');
+  }
+
+  return prisma.question.update({
+    where: { id },
+    data
+  });
+}
+
+// DELETE: Simple delete by ID
+async function deleteQuestion(id) {
+  return prisma.question.delete({ where: { id } });
+}
+
 module.exports = {
   createQuestion,
-  getAllQuestions,
   getQuestionById,
+  getQuestionByFilename,
   updateQuestion,
-  deleteQuestion,
-  getExerciseFull,
-  getExerciseBasic
+  deleteQuestion
 };

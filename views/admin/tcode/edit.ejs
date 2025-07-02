@@ -1,0 +1,18 @@
+<h1>Edit Tcode</h1>
+
+<%- include('../../partials/flash') %>
+
+<form method="POST" action="/admin/tcode/<%= tcode.id %>">
+  <label>Name: <input type="text" name="name" value="<%= tcode.name %>" required></label>
+  <label>Slug: <input type="text" name="slug" value="<%= tcode.slug %>" required></label>
+  <label>Type:
+    <select name="type">
+      <option value="fbise" <%= tcode.type === 'fbise' ? 'selected' : '' %>>FBISE</option>
+      <option value="punjab" <%= tcode.type === 'punjab' ? 'selected' : '' %>>Punjab</option>
+      <option value="custom" <%= tcode.type === 'custom' ? 'selected' : '' %>>Custom</option>
+    </select>
+  </label>
+  <button type="submit">Save</button>
+</form>
+
+<a href="/admin/tcode">Back</a>

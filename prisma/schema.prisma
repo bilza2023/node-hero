@@ -69,7 +69,7 @@ model Question {
   filename    String  @unique
   name        String
   type        String
-
+  content     Json? 
   exerciseId  Int
   exercise    Exercise @relation(fields: [exerciseId], references: [id])
 

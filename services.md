@@ -1,6 +1,3 @@
-Here’s a clean write-up you can drop into your Node-Hero project. This will anchor your architectural thinking and onboard future contributors.
-
----
 
 ## 🧠 Service Layer Philosophy — Node-Hero
 

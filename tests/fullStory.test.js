@@ -1,83 +1,104 @@
+// tests/services.test.js
+
 const prisma = require('../db');
+const {
+  createTcode,
+  deleteTcode,
+  getTcodeByName
+} = require('../services/tcodeService');
 
-describe('Tcode → Chapter → Exercise → Question lifecycle', () => {
-  let tcodeId, chapterId, exerciseId, questionId;
+const {
+  createChapter,
+  deleteChapter,
+  getChapterByFilename
+} = require('../services/chapterService');
 
-  // Clean DB before the suite
+const {
+  createExercise,
+  deleteExercise,
+  getExerciseByFilename
+} = require('../services/exerciseService');
+
+const {
+  createQuestion,
+  deleteQuestion,
+  getQuestionByFilename
+} = require('../services/questionService');
+
+describe('Syllabus Service Layer — Full Lifecycle', () => {
+  let tcodeName, chapterFilename, exerciseFilename, questionFilename;
+
   beforeAll(async () => {
+    // Clean slate
     await prisma.question.deleteMany();
     await prisma.exercise.deleteMany();
     await prisma.chapter.deleteMany();
     await prisma.tcode.deleteMany();
   });
 
-  test('create all entities in correct order', async () => {
-    // 1️⃣  TCODE
-    const tcode = await prisma.tcode.create({
-      data: {
-        tcodeName: `tcode-${Date.now()}`,
-        title: 'Sample Tcode',
-        description: 'demo',
-        image: 'tcode.png',
-      },
+  test('create → verify all entities', async () => {
+    // 1️⃣ Create Tcode
+    tcodeName = `tcode-${Date.now()}`;
+    const tcode = await createTcode({
+      tcodeName,
+      title: 'Test Syllabus',
+      description: 'testing',
+      image: 'cover.png'
     });
-    tcodeId = tcode.id;
 
-    // 2️⃣  CHAPTER
-    const chapter = await prisma.chapter.create({
-      data: {
-        name: 'chapter-one',
-        filename: `chapter-${Date.now()}.md`,
-        description: 'demo chapter',
-        image: 'chapter.png',
-        order: 1,
-        tcodeId,
-      },
+    expect(tcode.tcodeName).toBe(tcodeName);
+
+    // 2️⃣ Create Chapter
+    chapterFilename = `chapter-${Date.now()}`;
+    const chapter = await createChapter(tcodeName, {
+      name: 'Sample Chapter',
+      filename: chapterFilename,
+      description: 'test chapter',
+      image: 'chapter.png'
     });
-    chapterId = chapter.id;
 
-    // 3️⃣  EXERCISE  (uses **name** not title)
-    const exercise = await prisma.exercise.create({
-      data: {
-        name: 'exercise-one',
-        filename: `exercise-${Date.now()}.md`,
-        description: 'demo exercise',
-        image: 'exercise.png',
-        chapterId,
-      },
+    expect(chapter.filename).toBe(chapterFilename);
+
+    // 3️⃣ Create Exercise
+    exerciseFilename = `exercise-${Date.now()}`;
+    const exercise = await createExercise(tcodeName, chapterFilename, {
+      name: 'Sample Exercise',
+      filename: exerciseFilename,
+      description: 'test exercise',
+      image: 'exercise.png'
     });
-    exerciseId = exercise.id;
 
-    // 4️⃣  QUESTION  (only text + exerciseId)
-    const question = await prisma.question.create({
-        data: {
-          name: `q-${Date.now()}`,  // ← required by schema
-          type: 'slide',
-          filename: `q-${Date.now()}.md`,  // ← required by schema
-          exerciseId,
-        },
-      });
-      questionId = question.id; 
+    expect(exercise.filename).toBe(exerciseFilename);
 
-    // 5️⃣  Assertions
-    expect(await prisma.tcode.findUnique({ where: { id: tcodeId } })).toBeTruthy();
-    expect(await prisma.chapter.findUnique({ where: { id: chapterId } })).toBeTruthy();
-    expect(await prisma.exercise.findUnique({ where: { id: exerciseId } })).toBeTruthy();
-    expect(await prisma.question.findUnique({ where: { id: questionId } })).toBeTruthy();
+    // 4️⃣ Create Question
+    questionFilename = `q-${Date.now()}`;
+    const question = await createQuestion(tcodeName, chapterFilename, exerciseFilename, {
+      name: 'Sample Question',
+      type: 'slide',
+      filename: questionFilename
+    });
+
+    expect(question.filename).toBe(questionFilename);
+
+    // 5️⃣ Validate existence
+    expect(await getTcodeByName(tcodeName)).toBeTruthy();
+    expect(await getChapterByFilename(tcodeName, chapterFilename)).toBeTruthy();
+    expect(await getExerciseByFilename(tcodeName, chapterFilename, exerciseFilename)).toBeTruthy();
+    expect(await getQuestionByFilename(questionFilename)).toBeTruthy();
   });
 
-  test('delete in reverse & verify cleanup', async () => {
-    await prisma.question.delete({ where: { id: questionId } });
-    expect(await prisma.question.findUnique({ where: { id: questionId } })).toBeNull();
+  test('delete all in reverse order', async () => {
+    await deleteQuestion((await getQuestionByFilename(questionFilename)).id);
+    expect(await getQuestionByFilename(questionFilename)).toBeNull();
 
-    await prisma.exercise.delete({ where: { id: exerciseId } });
-    expect(await prisma.exercise.findUnique({ where: { id: exerciseId } })).toBeNull();
+    await deleteExercise((await getExerciseByFilename(tcodeName, chapterFilename, exerciseFilename)).id);
+    expect(await getExerciseByFilename(tcodeName, chapterFilename, exerciseFilename)).toBeNull();
 
-    await prisma.chapter.delete({ where: { id: chapterId } });
-    expect(await prisma.chapter.findUnique({ where: { id: chapterId } })).toBeNull();
+    await deleteChapter((await getChapterByFilename(tcodeName, chapterFilename)).id);
+    expect(await getChapterByFilename(tcodeName, chapterFilename)).toBeNull();
 
-    await prisma.tcode.delete({ where: { id: tcodeId } });
-    expect(await prisma.tcode.findUnique({ where: { id: tcodeId } })).toBeNull();
+    await deleteTcode((await getTcodeByName(tcodeName)).id);
+    expect(await getTcodeByName(tcodeName)).toBeNull();
   });
 
   afterAll(async () => {
