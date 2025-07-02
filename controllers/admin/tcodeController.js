@@ -3,66 +3,55 @@ const tcodeService = require('../../services/tcodeService');
 exports.index = async (req, res) => {
   try {
     const tcodes = await tcodeService.getAllTcodes();
-    res.render('admin/tcode/index', {
-      tcodes,
-      flash: req.flash()
-    });
+    // ⚠️ drop the `flash:` prop here
+    res.render('admin/tcode/index', { tcodes });
   } catch (err) {
     req.flash('error', 'Failed to load Tcodes');
-    res.redirect('/');
+    return res.redirect('/');
   }
 };
+
 exports.create = async (req, res) => {
   try {
-    // Step 1: Extract and map fields
     const { name, slug, type } = req.body;
-    const data = {
-      tcodeName: slug,
-      title: name
-    };
-
+    const data = { tcodeName: slug, title: name /* ,type if in schema */ };
     console.log('CreateTcode input:', data);
-
-    // Step 2: Call service
-    const result = await tcodeService.createTcode(data);
-
-    // Step 3: Handle result
-    if (result) {
-      req.flash('success', 'Tcode created successfully');
-    } else {
-      req.flash('error', 'Unknown error — tcode not created');
-    }
-
+    await tcodeService.createTcode(data);
+    req.flash('success', 'Tcode created successfully');
   } catch (err) {
     console.error('CreateTcode error:', err.message);
     req.flash('error', err.message);
   }
-
-  // Step 4: Always redirect back
   res.redirect('/admin/tcode');
 };
 
-
 exports.editForm = async (req, res) => {
   try {
-    const tcode = await tcodeService.getTcodeById(parseInt(req.params.id));
+    const id = parseInt(req.params.id, 10);
+    const tcode = await tcodeService.getTcodeById(id);
     if (!tcode) {
       req.flash('error', 'Tcode not found');
       return res.redirect('/admin/tcode');
     }
-
-    res.render('admin/tcode/edit', { tcode, flash: req.flash() });
+    // ⚠️ drop the `flash:` prop here too
+    res.render('admin/tcode/edit', { tcode });
   } catch (err) {
-    req.flash('error', 'Error loading tcode');
+    req.flash('error', 'Error loading Tcode');
     res.redirect('/admin/tcode');
   }
 };
 
 exports.update = async (req, res) => {
   try {
-    await tcodeService.updateTcode(parseInt(req.params.id), req.body);
+    const id = parseInt(req.params.id, 10);
+    await tcodeService.updateTcode(id, {
+      title: req.body.name,
+      // tcodeName is immutable; omit it
+      // type if your schema has it
+    });
     req.flash('success', 'Tcode updated');
   } catch (err) {
+    console.error('UpdateTcode error:', err.message);
     req.flash('error', err.message);
   }
   res.redirect('/admin/tcode');
@@ -70,9 +59,11 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    await tcodeService.deleteTcode(parseInt(req.params.id));
+    const id = parseInt(req.params.id, 10);
+    await tcodeService.deleteTcode(id);
     req.flash('success', 'Tcode deleted');
   } catch (err) {
+    console.error('DeleteTcode error:', err.message);
     req.flash('error', err.message);
   }
   res.redirect('/admin/tcode');
