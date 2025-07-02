@@ -4,19 +4,30 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const path = require('path');
 const app = express();
+
 const adminTcodeRoutes = require('./routes/admin/tcode');
-// Middlewares
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Session + Flash
-app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: true }));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}));
+
 app.use(flash());
+
+// ✅ FIXED: Attach flash data to locals for views (MUST be before routes)
 app.use((req, res, next) => {
-  res.locals.flash = req.session.flash;
-  delete req.session.flash;
+  res.locals.flash = {
+    success: req.flash('success'),
+    error: req.flash('error')
+  };
   next();
 });
 
@@ -31,26 +42,17 @@ const uploadRoutes = require('./routes/upload');
 const galleryRoutes = require('./routes/gallery');
 const commentRoutes = require('./routes/comments');
 
-// Modular syllabus routes
-// const syllabusTcodeRoutes = require('./routes/syllabus/tcode');
-// const syllabusChapterRoutes = require('./routes/syllabus/chapter');
-// const syllabusExerciseRoutes = require('./routes/syllabus/exercise');
-// const syllabusQuestionRoutes = require('./routes/syllabus/question');
-
+app.use('/admin/tcode', adminTcodeRoutes);
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/', uploadRoutes);
 app.use('/', galleryRoutes);
 app.use('/', commentRoutes);
-
-// Main syllabus module
-// app.use('/syllabus', syllabusTcodeRoutes);
-// app.use('/syllabus', syllabusChapterRoutes);
-// app.use('/syllabus', syllabusExerciseRoutes);
-// app.use('/syllabus', syllabusQuestionRoutes);
-
-app.use('/admin/tcode', adminTcodeRoutes);
-
+///Testing flash
+app.get('/test-flash', (req, res) => {
+  req.flash('success', 'Flash test worked!');
+  res.redirect('/admin/tcode');
+});
 // Start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
