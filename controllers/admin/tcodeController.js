@@ -1,3 +1,4 @@
+
 const tcodeService = require('../../services/tcodeService');
 
 exports.index = async (req, res) => {
@@ -45,9 +46,7 @@ exports.update = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     await tcodeService.updateTcode(id, {
-      title: req.body.name,
-      // tcodeName is immutable; omit it
-      // type if your schema has it
+      title: req.body.title, // ✅ correct key
     });
     req.flash('success', 'Tcode updated');
   } catch (err) {

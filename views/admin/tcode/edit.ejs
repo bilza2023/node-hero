@@ -1,17 +1,19 @@
+<head>
+  <link rel="stylesheet" href="/css/water.css">
+</head>
+
 <h1>Edit Tcode</h1>
 
-<%- include('../../partials/flash') %>
+<%- include('../../partials/flash.ejs') %>  
 
 <form method="POST" action="/admin/tcode/<%= tcode.id %>">
-  <label>Name: <input type="text" name="name" value="<%= tcode.name %>" required></label>
-  <label>Slug: <input type="text" name="slug" value="<%= tcode.slug %>" required></label>
-  <label>Type:
-    <select name="type">
-      <option value="fbise" <%= tcode.type === 'fbise' ? 'selected' : '' %>>FBISE</option>
-      <option value="punjab" <%= tcode.type === 'punjab' ? 'selected' : '' %>>Punjab</option>
-      <option value="custom" <%= tcode.type === 'custom' ? 'selected' : '' %>>Custom</option>
-    </select>
+  <p><strong>Tcode Name (locked):</strong> <%= tcode.tcodeName %></p>
+
+  <label>
+    Title:
+    <input type="text" name="title" value="<%= tcode.title %>" required>
   </label>
+
   <button type="submit">Save</button>
 </form>
 

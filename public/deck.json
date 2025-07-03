@@ -1,0 +1,71 @@
+[
+    {
+      "type": "titleSlide",
+      "start": 0,
+      "end": 8,
+      "items": [
+        {
+          "name": "title",
+          "content": "404: Content Not Found",
+          "showAt": 0
+        }
+      ]
+    },
+    {
+      "type": "imageWithCaption",
+      "start": 8,
+      "end": 18,
+      "items": [
+        {
+          "name": "image",
+          "content": "/pivot/box.webp",
+          "showAt": 0
+        },
+        {
+          "name": "caption",
+          "content": "Oops! This page is empty.",
+          "showAt": 1
+        }
+      ]
+    },
+    {
+      "type": "quoteSlide",
+      "start": 18,
+      "end": 28,
+      "items": [
+        {
+          "name": "quoteLine",
+          "content": "Not all those who wander are lost... but this page might be.",
+          "showAt": 0
+        },
+        {
+          "name": "author",
+          "content": "— Taleem.Help Bot",
+          "showAt": 2
+        }
+      ]
+    },
+    {
+      "type": "contactSlide",
+      "start": 28,
+      "end": 38,
+      "items": [
+        {
+          "name": "heading",
+          "content": "Need Assistance?",
+          "showAt": 0
+        },
+        {
+          "name": "subheading",
+          "content": "Visit our Help Center or Contact Support",
+          "showAt": 1
+        },
+        {
+          "name": "email",
+          "content": "support@taleem.help",
+          "showAt": 2
+        }
+      ]
+    }
+  ]
+  

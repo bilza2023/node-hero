@@ -6,19 +6,12 @@
 
 <h1>Manage Tcodes</h1>
 
-<%- include('./flash') %>  
+<%- include('../../partials/flash.ejs') %>  
 
 
 <form method="POST" action="/admin/tcode">
   <label>Name: <input type="text" name="name" required></label>
   <label>Slug: <input type="text" name="slug" required></label>
-  <label>Type:
-    <select name="type">
-      <option value="fbise">FBISE</option>
-      <option value="punjab">Punjab</option>
-      <option value="custom">Custom</option>
-    </select>
-  </label>
   <button type="submit">Add Tcode</button>
 </form>
 
