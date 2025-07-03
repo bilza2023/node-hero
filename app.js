@@ -6,6 +6,7 @@ const path = require('path');
 const app = express();
 
 const adminTcodeRoutes = require('./routes/admin/tcode');
+// const adminChapterRoutes = require('./routes/admin/chapter')
 
 // Middleware
 app.use(express.json());
@@ -43,6 +44,8 @@ const galleryRoutes = require('./routes/gallery');
 const commentRoutes = require('./routes/comments');
 
 app.use('/admin/tcode', adminTcodeRoutes);
+// app.use('/admin/chapter',adminChapterRoutes );
+
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/', uploadRoutes);

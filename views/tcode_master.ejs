@@ -1,0 +1,53 @@
+<head>
+  <link rel="stylesheet" href="/css/water.css">
+</head>
+
+<h1>Manage Tcodes</h1>
+
+<%- include('./partials/flash.ejs') %>
+
+<% if (tcodeToEdit) { %>
+  <h2>Edit Tcode</h2>
+  <form method="POST" action="/admin/tcode/<%= tcodeToEdit.id %>">
+    <p><strong>Tcode Name:</strong> <%= tcodeToEdit.tcodeName %> (locked)</p>
+    <label>Title: <input type="text" name="title" value="<%= tcodeToEdit.title %>" required></label>
+    <button type="submit">Save Changes</button>
+  </form>
+<% } else { %>
+  <h2>New Tcode</h2>
+  <form method="POST" action="/admin/tcode">
+    <label>Name: <input type="text" name="name" required></label>
+    <label>Slug: <input type="text" name="slug" required></label>
+    <button type="submit">Add Tcode</button>
+  </form>
+<% } %>
+
+<form method="GET" action="/admin/tcode">
+  <button type="submit">Refresh Table</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Title</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% tcodes.forEach(tcode => { %>
+      <tr>
+        <td><%= tcode.id %></td>
+        <td><%= tcode.tcodeName %></td>
+        <td><%= tcode.title %></td>
+        <td>
+          <a href="/admin/tcode?edit=<%= tcode.id %>">Edit</a>
+          <form method="POST" action="/admin/tcode/<%= tcode.id %>/delete" style="display:inline">
+            <button type="submit" onclick="return confirm('Delete this tcode?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>

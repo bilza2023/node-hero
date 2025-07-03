@@ -2,14 +2,18 @@
 const tcodeService = require('../../services/tcodeService');
 
 exports.index = async (req, res) => {
-  try {
-    const tcodes = await tcodeService.getAllTcodes();
-    // ⚠️ drop the `flash:` prop here
-    res.render('admin/tcode/index', { tcodes });
-  } catch (err) {
-    req.flash('error', 'Failed to load Tcodes');
-    return res.redirect('/');
+  const tcodes = await tcodeService.getAllTcodes();
+  const editId = req.query.edit;
+
+  let tcodeToEdit = null;
+  if (editId) {
+    tcodeToEdit = await tcodeService.getTcodeById(parseInt(editId));
   }
+
+  res.render('tcode_master', {
+    tcodes,
+    tcodeToEdit
+  });
 };
 
 exports.create = async (req, res) => {
@@ -24,22 +28,6 @@ exports.create = async (req, res) => {
     req.flash('error', err.message);
   }
   res.redirect('/admin/tcode');
-};
-
-exports.editForm = async (req, res) => {
-  try {
-    const id = parseInt(req.params.id, 10);
-    const tcode = await tcodeService.getTcodeById(id);
-    if (!tcode) {
-      req.flash('error', 'Tcode not found');
-      return res.redirect('/admin/tcode');
-    }
-    // ⚠️ drop the `flash:` prop here too
-    res.render('admin/tcode/edit', { tcode });
-  } catch (err) {
-    req.flash('error', 'Error loading Tcode');
-    res.redirect('/admin/tcode');
-  }
 };
 
 exports.update = async (req, res) => {

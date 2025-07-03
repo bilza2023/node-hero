@@ -78,27 +78,6 @@ Uploads are saved under a structured folder layout and linked by question ID.
 
 ---
 
-## 4. File and Folder Structure
-
-```
-project-root/
-├── data/
-│   ├── syllabus/       # .js files representing syllabus objects
-│   ├── questions/      # .js (or .json) files with question metadata
-│   ├── decks/          # Deck presentation files (.js)
-│   ├── images/         # Uploaded images (.webp)
-│   ├── narration/      # Audio files (.opus)
-│   └── out/            # Exported output files (JSON bundles)
-├── db/
-│   └── backoffice.db   # SQLite admin DB
-├── views/              # EJS templates
-├── routes/             # Express routes for UI + uploads
-├── public/             # Static assets (CSS, etc.)
-├── utils/              # File writers, parsers, git tools
-├── app.js              # Express app entry
-└── README.md
-```
-
 ---
 
 ## 5. Admin Interface Features
@@ -122,16 +101,3 @@ All built in EJS:
   * Push/export from inside panel (optional)
 
 ---
-
-## 6. Next Steps
-
-* [ ] Confirm folder layout + naming rules (slugs vs IDs)
-* [ ] Build file parsers + SQLite sync logic
-* [ ] Implement syllabus CRUD interface
-* [ ] Add upload endpoints + link to questions
-* [ ] Create export engine
-* [ ] Add Git utility (simple-git or shell)
-
----
-
-Let me know if you'd like this saved into a file or loaded into a code canvas.
