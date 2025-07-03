@@ -1,0 +1,106 @@
+<!-- Layout Head -->
+<head>
+  <link rel="stylesheet" href="/css/water.css">
+</head>
+
+<h1>Manage Chapters</h1>
+
+<%- include('./partials/flash.ejs') %>
+
+<!-- SECTION A: Tcode Selector (Filter Chapters) -->
+<form method="GET" action="/admin/chapter">
+  <label>
+    Tcode:
+    <select name="tcode" required>
+      <option value="">-- pick one --</option>
+      <% allTcodes.forEach(tc => { %>
+        <option
+          value="<%= tc.tcodeName %>"
+          <%= tcode && tcode.tcodeName === tc.tcodeName ? 'selected' : '' %>
+        >
+          <%= tc.title %>
+        </option>
+      <% }) %>
+    </select>
+  </label>
+  <button type="submit">Show</button>
+</form>
+
+<hr>
+
+<!-- SECTION B: Edit Chapter -->
+<% if (chapterToEdit) { %>
+  <h2>Edit Chapter</h2>
+  <form method="POST" action="/admin/chapter/<%= chapterToEdit.id %>">
+    <p>
+      <strong>Filename (locked):</strong>
+      <%= chapterToEdit.filename %>
+    </p>
+    <label>
+      Title:
+      <input type="text" name="title" value="<%= chapterToEdit.name %>" required>
+    </label>
+    <input type="hidden" name="tcodeId" value="<%= tcode.id %>">
+    <button type="submit">Save Changes</button>
+  </form>
+
+<!-- SECTION C: Add Chapter -->
+<% } else if (tcode) { %>
+  <h2>Add New Chapter to “<%= tcode.title %>”</h2>
+  <form method="POST" action="/admin/chapter/create">
+    <input type="hidden" name="tcodeId" value="<%= tcode.id %>">
+    <label>
+      Title:
+      <input type="text" name="title" required>
+    </label>
+    <label>
+      Filename (slug):
+      <input
+        type="text"
+        name="filename"
+        pattern="[a-z0-9_-]+"
+        title="lowercase a-z, 0-9, dash or underscore"
+        required
+      >
+    </label>
+    <button type="submit">Add Chapter</button>
+  </form>
+<% } %>
+
+<hr>
+
+<!-- SECTION D: Chapter List Table -->
+<% if (chapters && chapters.length > 0) { %>
+  <h2>Chapters in “<%= tcode.title %>”</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Filename</th>
+        <th>Title</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% chapters.forEach(ch => { %>
+        <tr>
+          <td><%= ch.id %></td>
+          <td><%= ch.filename %></td>
+          <td><%= ch.name %></td>
+          <td>
+            <a href="/admin/chapter?tcode=<%= tcode.tcodeName %>&edit=<%= ch.id %>">Edit</a>
+            <form
+              method="POST"
+              action="/admin/chapter/<%= ch.id %>/delete?tcode=<%= tcode.tcodeName %>"
+              style="display:inline"
+            >
+              <button type="submit" onclick="return confirm('Delete chapter?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } else if (tcode) { %>
+  <p>No chapters for “<%= tcode.title %>” yet.</p>
+<% } %>

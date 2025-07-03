@@ -3,11 +3,9 @@ const express = require('express');
 const session = require('express-session');
 const flash = require('connect-flash');
 const path = require('path');
+
 const app = express();
-
-const adminTcodeRoutes = require('./routes/admin/tcode');
-// const adminChapterRoutes = require('./routes/admin/chapter')
-
+debugger;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,10 +18,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
 app.use(flash());
 
-// ✅ FIXED: Attach flash data to locals for views (MUST be before routes)
+// Attach flash data to views
 app.use((req, res, next) => {
   res.locals.flash = {
     success: req.flash('success'),
@@ -37,26 +34,29 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Routes
-const indexRoutes = require('./routes/index');
-const authRoutes = require('./routes/auth');
-const uploadRoutes = require('./routes/upload');
-const galleryRoutes = require('./routes/gallery');
-const commentRoutes = require('./routes/comments');
+const adminTcodeRoutes    = require('./routes/admin/tcode');
+const adminChapterRoutes  = require('./routes/admin/chapter');
+const indexRoutes         = require('./routes/index');
+const authRoutes          = require('./routes/auth');
+const uploadRoutes        = require('./routes/upload');
+const galleryRoutes       = require('./routes/gallery');
+const commentRoutes       = require('./routes/comments');
 
 app.use('/admin/tcode', adminTcodeRoutes);
-// app.use('/admin/chapter',adminChapterRoutes );
-
+app.use('/admin/chapter', adminChapterRoutes);
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/', uploadRoutes);
 app.use('/', galleryRoutes);
 app.use('/', commentRoutes);
-///Testing flash
+
+// Flash test
 app.get('/test-flash', (req, res) => {
   req.flash('success', 'Flash test worked!');
   res.redirect('/admin/tcode');
 });
-// Start
+// debugger;
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Node Hero running on http://localhost:${PORT}`);

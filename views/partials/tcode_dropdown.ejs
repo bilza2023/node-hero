@@ -1,0 +1,15 @@
+<label>
+    Tcode:
+    <select name="tcodeId" required>
+      <option value="">-- pick one --</option>
+      <% allTcodes.forEach(tc => { %>
+        <option
+          value="<%= tc.id %>"
+          <%= tcode && tcode.id === tc.id ? 'selected' : '' %>
+        >
+          <%= tc.title %>
+        </option>
+      <% }) %>
+    </select>
+  </label>
+  

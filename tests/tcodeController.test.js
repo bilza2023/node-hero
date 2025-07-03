@@ -5,9 +5,10 @@ const tcodeService = require('../services/tcodeService');
 
 jest.mock('../services/tcodeService');
 
-const mockReq = (body = {}, params = {}) => ({
+const mockReq = (body = {}, params = {}, query = {}) => ({
   body,
   params,
+  query,
   flash: jest.fn(),
 });
 const mockRes = () => {
@@ -32,7 +33,7 @@ describe('Tcode Controller', () => {
       tcodeName: 'math',
       title: 'Math'
     });
-    expect(req.flash).toHaveBeenCalled();
+    expect(req.flash).toHaveBeenCalledWith('success', 'Tcode created successfully');
     expect(res.redirect).toHaveBeenCalledWith('/admin/tcode');
   });
 
@@ -43,12 +44,12 @@ describe('Tcode Controller', () => {
     await tcodeController.update(req, res);
 
     expect(tcodeService.updateTcode).toHaveBeenCalledWith(42, { title: 'New Title' });
-    expect(req.flash).toHaveBeenCalled();
+    expect(req.flash).toHaveBeenCalledWith('success', 'Tcode updated');
     expect(res.redirect).toHaveBeenCalledWith('/admin/tcode');
   });
 
   test('index → fetches tcodes and renders view', async () => {
-    const req = mockReq();
+    const req = mockReq({}, {}, {}); // ensure req.query exists
     const res = mockRes();
     const mockData = [{ id: 1, title: 'Physics' }];
     tcodeService.getAllTcodes.mockResolvedValue(mockData);
@@ -56,6 +57,9 @@ describe('Tcode Controller', () => {
     await tcodeController.index(req, res);
 
     expect(tcodeService.getAllTcodes).toHaveBeenCalled();
-    expect(res.render).toHaveBeenCalledWith('admin/tcode/index', { tcodes: mockData });
+    expect(res.render).toHaveBeenCalledWith(
+      'tcode_master',
+      { tcodes: mockData, tcodeToEdit: null }
+    );
   });
 });
