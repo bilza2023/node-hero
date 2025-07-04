@@ -42,6 +42,8 @@
         <td><%= tcode.tcodeName %></td>
         <td><%= tcode.title %></td>
         <td>
+          <a href="/admin/chapter?tcode=<%=tcode.tcodeName%>&tcodeId=<%= tcode.id %>">Add Chapter</a>
+
           <a href="/admin/tcode?edit=<%= tcode.id %>">Edit</a>
           <form method="POST" action="/admin/tcode/<%= tcode.id %>/delete" style="display:inline">
             <button type="submit" onclick="return confirm('Delete this tcode?')">Delete</button>

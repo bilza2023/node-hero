@@ -13,43 +13,21 @@
       color: #222;
       text-decoration: none;
     }
-  
+
     .btn-sm:hover {
       background: #ddd;
       cursor: pointer;
     }
   </style>
-  
 </head>
 
 <h1>Manage Chapters</h1>
 
 <%- include('./partials/flash.ejs') %>
 
-<!-- SECTION A: Tcode Selector (Filter Chapters) -->
-<form method="GET" action="/admin/chapter">
-  <label>
-    Tcode:
-    <select name="tcode" required>
-      <option value="">-- pick one --</option>
-      <% allTcodes.forEach(tc => { %>
-        <option
-          value="<%= tc.tcodeName %>"
-          <%= tcode && tcode.tcodeName === tc.tcodeName ? 'selected' : '' %>
-        >
-          <%= tc.title %>
-        </option>
-      <% }) %>
-    </select>
-  </label>
-  <button type="submit">Show</button>
-</form>
-
-<hr>
-
-<!-- SECTION B: Edit Chapter -->
+<!-- SECTION A: Edit Chapter -->
 <% if (chapterToEdit) { %>
-  <h2>Edit Chapter</h2>
+  <h2>Edit Chapter in “<%= tcode.title %>”</h2>
   <form method="POST" action="/admin/chapter/<%= chapterToEdit.id %>">
     <p>
       <strong>Filename (locked):</strong>
@@ -63,7 +41,7 @@
     <button type="submit">Save Changes</button>
   </form>
 
-<!-- SECTION C: Add Chapter -->
+<!-- SECTION B: Add Chapter -->
 <% } else if (tcode) { %>
   <h2>Add New Chapter to “<%= tcode.title %>”</h2>
   <form method="POST" action="/admin/chapter/create">
@@ -87,7 +65,8 @@
 <% } %>
 
 <hr>
-<!-- SECTION D: Chapter List Table -->
+
+<!-- SECTION C: Chapter List Table -->
 <% if (chapters && chapters.length > 0) { %>
   <h2>Chapters in “<%= tcode.title %>”</h2>
   <table>
@@ -115,12 +94,11 @@
             </form>
             <a href="/admin/chapter?tcode=<%= tcode.tcodeName %>&edit=<%= ch.id %>" class="btn-sm">Edit</a>
             <a
-            href="/admin/exercise?tcode=<%= tcode.tcodeName %>&tcodeId=<%= tcode.id %>&chapter=<%= ch.filename %>&chapterId=<%= ch.id %>"
-            class="btn-sm"
-          >
-            AddEx
-          </a>
-          
+              href="/admin/exercise?tcode=<%= tcode.tcodeName %>&tcodeId=<%= tcode.id %>&chapter=<%= ch.filename %>&chapterId=<%= ch.id %>"
+              class="btn-sm"
+            >
+              AddEx
+            </a>
           </td>
         </tr>
       <% }) %>
