@@ -1,0 +1,100 @@
+<!-- Inside your question_master.ejs, in the <head> or just above the form: -->
+    <style>
+                .section-title {
+          font-size: 1.75rem;
+          color: #00bfff;
+          text-align: center;
+          margin: 2rem 0 1rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 2px solid #00bfff;
+          font-weight: bold;
+        }
+        .form-group {
+          margin-bottom: 1.5rem;
+        }
+        .form-group label {
+          display: block;
+          font-weight: bold;
+          margin-bottom: 0.5rem;
+        }
+        .form-group input,
+        .form-group select {
+          width: 100%;
+          padding: 0.75rem;
+          font-size: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+        .form-group textarea {
+          width: 100%;
+          min-height: 150px;
+          padding: 0.75rem;
+          font-family: monospace;
+          font-size: 0.95rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          resize: vertical;
+        }
+        .btn-add {
+          display: inline-flex;
+          align-items: center;
+          background-color: #28a745;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          padding: 0.75rem 1.5rem;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+        }
+        .btn-add:hover {
+          background-color: #218838;
+        }
+        .btn-add .icon {
+          margin-right: 0.5rem;
+          font-size: 1.1rem;
+        }
+      </style>
+      
+      <!-- SECTION A: Add Question -->
+      <h3 class="section-title">Add New Question</h3>
+      
+      <form method="POST" action="/admin/question/create">
+        <input type="hidden" name="exerciseId" value="<%= exerciseId %>">
+        <input type="hidden" name="chapterId"  value="<%= chapterId %>">
+        <input type="hidden" name="chapter"    value="<%= chapter %>">
+        <input type="hidden" name="tcode"      value="<%= tcode %>">
+        <input type="hidden" name="tcodeId"    value="<%= tcodeId %>">
+        <input type="hidden" name="exercise"   value="<%= exercise %>">
+      
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input id="title" type="text" name="title" placeholder="Enter question title" required>
+        </div>
+      
+        <div class="form-group">
+          <label for="filename">Filename (slug)</label>
+          <input id="filename" type="text" name="filename" placeholder="e.g. question_1" pattern="[a-z0-9_-]+" required>
+        </div>
+      
+        <div class="form-group">
+          <label for="type">Type</label>
+          <select id="type" name="type" required>
+            <option value="slide">Slide</option>
+            <option value="md">Md</option>
+          </select>
+        </div>
+      
+        <div class="form-group">
+          <label for="content">Content (JSON)</label>
+          <textarea id="content" name="content" ></textarea>
+        </div>
+      
+        <div class="form-group">
+          <button type="submit" class="btn-add">
+            <span class="icon">➕</span>
+            Add Question
+          </button>
+        </div>
+      </form>
+      

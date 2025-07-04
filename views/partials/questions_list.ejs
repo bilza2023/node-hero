@@ -1,0 +1,38 @@
+<h3>Questions</h3>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Filename</th>
+      <th>Title</th>
+      <th>Type</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% questions.forEach(q => { %>
+      <tr>
+        <td><%= q.id %></td>
+        <td><%= q.filename %></td>
+        <td><%= q.name %></td>
+        <td><%= q.type %></td>
+        <td>
+          <form
+            method="POST"
+            action="/admin/question/<%= q.id %>/delete?tcode=<%= tcode %>&tcodeId=<%= tcodeId %>&chapter=<%= chapter %>&chapterId=<%= chapterId %>&exercise=<%= exercise %>&exerciseId=<%= exerciseId %>"
+            style="display:inline"
+          >
+            <button type="submit" class="btn-sm" onclick="return confirm('Delete question?')">
+              Delete
+            </button>
+          </form>
+
+          <a
+            href="/admin/question?tcode=<%= tcode %>&tcodeId=<%= tcodeId %>&chapter=<%= chapter %>&chapterId=<%= chapterId %>&exercise=<%= exercise %>&exerciseId=<%= exerciseId %>&edit=<%= q.id %>"
+            class="btn-sm"
+          >Edit</a>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
