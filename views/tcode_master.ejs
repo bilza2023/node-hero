@@ -1,55 +1,159 @@
+<!DOCTYPE html>
+<html>
 <head>
-  <link rel="stylesheet" href="/css/water.css">
+  <title>Manage Tcodes</title>
+  <style>
+    /* match your other pages */
+    body {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #ffffff;
+    }
+
+    /* centered “box” wrapper */
+    .tcode-box {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #2d2d2d;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    /* form inputs */
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      background: #1e1e1e;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 4px;
+    }
+
+    /* buttons */
+    button {
+      margin-top: 1rem;
+      padding: 0.7rem 2rem;
+      background-color: #00bfff;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #009fd1;
+    }
+
+    /* table styling */
+    table {
+      width: 100%;
+      margin-top: 2rem;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.5rem 1rem;
+      border: 1px solid #444;
+      text-align: left;
+    }
+    th {
+      background-color: #333;
+      color: #fff;
+    }
+    td {
+      background-color: #2d2d2d;
+    }
+
+    a {
+      color: #00bfff;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
+<body>
 
-<h1>Manage Tcodes</h1>
+  <!-- same navbar include -->
+  <%- include('./partials/navbar') %>
 
-<%- include('./partials/flash.ejs') %>
+  <h1>Manage Tcodes</h1>
 
-<% if (tcodeToEdit) { %>
-  <h2>Edit Tcode</h2>
-  <form method="POST" action="/admin/tcode/<%= tcodeToEdit.id %>">
-    <p><strong>Tcode Name:</strong> <%= tcodeToEdit.tcodeName %> (locked)</p>
-    <label>Title: <input type="text" name="title" value="<%= tcodeToEdit.title %>" required></label>
-    <button type="submit">Save Changes</button>
-  </form>
-<% } else { %>
-  <h2>New Tcode</h2>
-  <form method="POST" action="/admin/tcode">
-    <label>Name: <input type="text" name="name" required></label>
-    <label>Slug: <input type="text" name="slug" required></label>
-    <button type="submit">Add Tcode</button>
-  </form>
-<% } %>
+  <div class="tcode-box">
+    <%- include('./partials/flash.ejs') %>
 
-<form method="GET" action="/admin/tcode">
-  <button type="submit">Refresh Table</button>
-</form>
+    <% if (tcodeToEdit) { %>
+      <form method="POST" action="/admin/tcode/<%= tcodeToEdit.id %>">
+        <label>
+          <strong>Tcode Name:</strong><br>
+          <input type="text" value="<%= tcodeToEdit.tcodeName %>" disabled>
+        </label>
+        <label>
+          Title:
+          <input type="text" name="title" value="<%= tcodeToEdit.title %>" required>
+        </label>
+        <button type="submit">Save Changes</button>
+      </form>
+    <% } else { %>
+      <form method="POST" action="/admin/tcode">
+        <label>
+          Name:
+          <input type="text" name="name" required>
+        </label>
+        <label>
+          Slug:
+          <input type="text" name="slug" required>
+        </label>
+        <button type="submit">Add Tcode</button>
+      </form>
+    <% } %>
 
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Title</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% tcodes.forEach(tcode => { %>
-      <tr>
-        <td><%= tcode.id %></td>
-        <td><%= tcode.tcodeName %></td>
-        <td><%= tcode.title %></td>
-        <td>
-          <a href="/admin/chapter?tcode=<%=tcode.tcodeName%>&tcodeId=<%= tcode.id %>">Add Chapter</a>
+    <form method="GET" action="/admin/tcode">
+      <button type="submit">Refresh Table</button>
+    </form>
 
-          <a href="/admin/tcode?edit=<%= tcode.id %>">Edit</a>
-          <form method="POST" action="/admin/tcode/<%= tcode.id %>/delete" style="display:inline">
-            <button type="submit" onclick="return confirm('Delete this tcode?')">Delete</button>
-          </form>
-        </td>
-      </tr>
-    <% }) %>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Title</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% tcodes.forEach(tcode => { %>
+          <tr>
+            <td><%= tcode.id %></td>
+            <td><%= tcode.tcodeName %></td>
+            <td><%= tcode.title %></td>
+            <td>
+              <a href="/admin/chapter?tcode=<%=tcode.tcodeName%>&tcodeId=<%= tcode.id %>">Add Chapter</a>
+              <a href="/admin/tcode?edit=<%= tcode.id %>">Edit</a>
+              <form method="POST" action="/admin/tcode/<%= tcode.id %>/delete" style="display:inline">
+                <button type="submit" onclick="return confirm('Delete this tcode?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

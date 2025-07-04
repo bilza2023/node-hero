@@ -1,0 +1,103 @@
+<!-- Layout Head -->
+<head>
+    <link rel="stylesheet" href="/css/water.css">
+    <style>
+      .btn-sm {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+        margin-right: 0.3rem;
+        display: inline-block;
+        border: 1px solid #888;
+        border-radius: 4px;
+        background: #f3f3f3;
+        color: #222;
+        text-decoration: none;
+      }
+  
+      .btn-sm:hover {
+        background: #ddd;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  
+  <h1>Manage Questions</h1>
+  <%- include('./partials/navbar') %>
+  <%- include('./partials/flash.ejs') %>
+  
+  <h2>Exercise: <%= exercise %> (Chapter: <%= chapter %>, Tcode: <%= tcode %>)</h2>
+  
+  <!-- SECTION A: Add Question -->
+  <h3>Add New Question</h3>
+  <form method="POST" action="/admin/question/create">
+    <input type="hidden" name="exerciseId" value="<%= exerciseId %>">
+    <input type="hidden" name="chapterId" value="<%= chapterId %>">
+    <input type="hidden" name="chapter" value="<%= chapter %>">
+    <input type="hidden" name="tcode" value="<%= tcode %>">
+    <input type="hidden" name="tcodeId" value="<%= tcodeId %>">
+    <input type="hidden" name="exercise" value="<%= exercise %>">
+  
+    <label>
+      Title:
+      <input type="text" name="title" required>
+    </label>
+    <label>
+      Filename (slug):
+      <input type="text" name="filename" pattern="[a-z0-9_-]+" required>
+    </label>
+    <label>
+      Type:
+      <select name="type" required>
+        <option value="slide">Slide</option>
+        <option value="deck">Deck</option>
+        <option value="mcq">MCQ</option>
+        <option value="text">Text</option>
+      </select>
+    </label>
+    <button type="submit">Add Question</button>
+  </form>
+  
+  <hr>
+  
+  <!-- SECTION B: Question Table -->
+  <% if (questions && questions.length > 0) { %>
+    <h3>Questions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Filename</th>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% questions.forEach(q => { %>
+          <tr>
+            <td><%= q.id %></td>
+            <td><%= q.filename %></td>
+            <td><%= q.name %></td>
+            <td><%= q.type %></td>
+            <td>
+              <form
+                method="POST"
+                action="/admin/question/<%= q.id %>/delete?tcode=<%= tcode %>&tcodeId=<%= tcodeId %>&chapter=<%= chapter %>&chapterId=<%= chapterId %>&exercise=<%= exercise %>&exerciseId=<%= exerciseId %>"
+                style="display:inline"
+              >
+                <button type="submit" class="btn-sm" onclick="return confirm('Delete question?')">Delete</button>
+              </form>
+  
+              <a
+                href="/admin/question?tcode=<%= tcode %>&tcodeId=<%= tcodeId %>&chapter=<%= chapter %>&chapterId=<%= chapterId %>&exercise=<%= exercise %>&exerciseId=<%= exerciseId %>&edit=<%= q.id %>"
+                class="btn-sm"
+              >Edit</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No questions for this exercise yet.</p>
+  <% } %>
+  

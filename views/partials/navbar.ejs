@@ -1,0 +1,37 @@
+<nav id="nav" style="padding: 1rem; background: #2d2d2d; color: #f0f0f0; font-family: sans-serif; display: flex; justify-content: space-between; align-items: center;">
+  <div>
+    <a href="/" style="color: #00bfff; text-decoration: none; margin-right: 1rem;">🏠 Home</a>
+    <a href="/admin/tcode" style="color: #f0f0f0; text-decoration: none; margin-right: 1rem;">Syllabus</a>
+    <a href="/upload/image" style="color: #f0f0f0; text-decoration: none; margin-right: 1rem;">Upload Image</a>
+    <a href="/uploads" style="color: #f0f0f0; text-decoration: none; margin-right: 1rem;">Uploads</a>
+    <a href="/gallery" style="color: #f0f0f0; text-decoration: none; margin-right: 1rem;">Gallery</a>
+    <a href="/comments" style="color: #f0f0f0; text-decoration: none; margin-right: 1rem;">Comments</a>
+    <span id="user-email" style="margin-left: 1rem;">Checking login...</span>
+  </div>
+  <button onclick="logout()" style="padding: 0.3rem 0.6rem;">Logout</button>
+</nav>
+
+<script>
+  async function checkLogin() {
+    const token = localStorage.getItem('token');
+    if (!token) return window.location.href = '/login';
+
+    const res = await fetch('/whoami', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+
+    if (res.ok) {
+      const user = await res.json();
+      document.getElementById('user-email').textContent = 'Logged in as: ' + user.email;
+    } else {
+      window.location.href = '/login';
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }
+
+  checkLogin();
+</script>

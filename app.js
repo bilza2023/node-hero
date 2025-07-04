@@ -8,6 +8,7 @@ const app = express();
 const adminTcodeRoutes    = require('./routes/admin/tcode');
 const adminChapterRoutes  = require('./routes/admin/chapter');
 const exerciseRoutes      = require('./routes/admin/exercise');
+const questionRoutes      = require('./routes/admin/question');
 
 const indexRoutes         = require('./routes/index');
 const authRoutes          = require('./routes/auth');
@@ -48,6 +49,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/admin/tcode', adminTcodeRoutes);
 app.use('/admin/chapter', adminChapterRoutes);
 app.use('/admin/exercise', exerciseRoutes);
+app.use('/admin/question', questionRoutes);
 
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
