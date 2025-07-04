@@ -9,7 +9,16 @@ function validateFilename(name) {
   }
 }
 
-// CREATE: Add question under exercise
+/**
+ * Fetch a single question by ID
+ */
+async function getQuestionById(id) {
+  return prisma.question.findUnique({ where: { id } });
+}
+
+/**
+ * CREATE: add new question including JSON content
+ */
 async function createQuestion(exerciseId, data) {
   validateFilename(data.filename);
 
@@ -17,14 +26,21 @@ async function createQuestion(exerciseId, data) {
     where: { id: exerciseId },
     include: { questions: true }
   });
-
   if (!exercise) {
     throw new Error(`Exercise ID ${exerciseId} not found.`);
   }
 
-  const exists = exercise.questions.find(q => q.filename === data.filename);
-  if (exists) {
+  if (exercise.questions.some(q => q.filename === data.filename)) {
     throw new Error(`Question filename '${data.filename}' already exists in this exercise.`);
+  }
+
+  let parsedContent = null;
+  if (data.content) {
+    try {
+      parsedContent = JSON.parse(data.content);
+    } catch {
+      throw new Error('Invalid JSON in content field.');
+    }
   }
 
   return prisma.question.create({
@@ -32,12 +48,15 @@ async function createQuestion(exerciseId, data) {
       name: data.title,
       filename: data.filename,
       type: data.type || 'slide',
+      content: parsedContent,
       exerciseId: exercise.id
     }
   });
 }
 
-// READ: Get all questions under an exercise
+/**
+ * READ: all questions under one exercise
+ */
 async function getQuestionsForExercise(exerciseId) {
   return prisma.question.findMany({
     where: { exerciseId },
@@ -45,24 +64,45 @@ async function getQuestionsForExercise(exerciseId) {
   });
 }
 
-// UPDATE
+/**
+ * UPDATE: modify title, type, and content
+ */
 async function updateQuestion(id, data) {
-  if ('filename' in data) {
-    throw new Error('Question filename cannot be changed.');
+  const updateData = {};
+
+  if ('title' in data) {
+    updateData.name = data.title;
+  }
+  if ('type' in data) {
+    updateData.type = data.type;
+  }
+  if ('content' in data) {
+    if (data.content) {
+      try {
+        updateData.content = JSON.parse(data.content);
+      } catch {
+        throw new Error('Invalid JSON in content field.');
+      }
+    } else {
+      updateData.content = null;
+    }
   }
 
   return prisma.question.update({
     where: { id },
-    data: { name: data.title }
+    data: updateData
   });
 }
 
-// DELETE
+/**
+ * DELETE
+ */
 async function deleteQuestion(id) {
   return prisma.question.delete({ where: { id } });
 }
 
 module.exports = {
+  getQuestionById,
   createQuestion,
   getQuestionsForExercise,
   updateQuestion,
