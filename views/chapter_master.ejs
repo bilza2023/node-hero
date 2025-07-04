@@ -1,6 +1,25 @@
 <!-- Layout Head -->
 <head>
   <link rel="stylesheet" href="/css/water.css">
+  <style>
+    .btn-sm {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      margin-right: 0.3rem;
+      display: inline-block;
+      border: 1px solid #888;
+      border-radius: 4px;
+      background: #f3f3f3;
+      color: #222;
+      text-decoration: none;
+    }
+  
+    .btn-sm:hover {
+      background: #ddd;
+      cursor: pointer;
+    }
+  </style>
+  
 </head>
 
 <h1>Manage Chapters</h1>
@@ -68,7 +87,6 @@
 <% } %>
 
 <hr>
-
 <!-- SECTION D: Chapter List Table -->
 <% if (chapters && chapters.length > 0) { %>
   <h2>Chapters in “<%= tcode.title %>”</h2>
@@ -88,14 +106,21 @@
           <td><%= ch.filename %></td>
           <td><%= ch.name %></td>
           <td>
-            <a href="/admin/chapter?tcode=<%= tcode.tcodeName %>&edit=<%= ch.id %>">Edit</a>
             <form
               method="POST"
               action="/admin/chapter/<%= ch.id %>/delete?tcode=<%= tcode.tcodeName %>"
               style="display:inline"
             >
-              <button type="submit" onclick="return confirm('Delete chapter?')">Delete</button>
+              <button type="submit" class="btn-sm" onclick="return confirm('Delete chapter?')">Delete</button>
             </form>
+            <a href="/admin/chapter?tcode=<%= tcode.tcodeName %>&edit=<%= ch.id %>" class="btn-sm">Edit</a>
+            <a
+            href="/admin/exercise?tcode=<%= tcode.tcodeName %>&tcodeId=<%= tcode.id %>&chapter=<%= ch.filename %>&chapterId=<%= ch.id %>"
+            class="btn-sm"
+          >
+            AddEx
+          </a>
+          
           </td>
         </tr>
       <% }) %>

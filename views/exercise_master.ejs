@@ -1,0 +1,106 @@
+<!-- Layout Head -->
+<head>
+    <link rel="stylesheet" href="/css/water.css">
+    <style>
+      .btn-sm {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+        margin-right: 0.3rem;
+        display: inline-block;
+        border: 1px solid #888;
+        border-radius: 4px;
+        background: #f3f3f3;
+        color: #222;
+        text-decoration: none;
+      }
+  
+      .btn-sm:hover {
+        background: #ddd;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  
+  <h1>Manage Exercises</h1>
+  
+  <%- include('./partials/flash.ejs') %>
+  
+  <h2>Chapter: <%= chapter %> (Tcode: <%= tcode %>)</h2>
+  
+  <!-- SECTION A: Add Exercise -->
+  <h3>Add New Exercise</h3>
+  <form method="POST" action="/admin/exercise/create">
+    <input type="hidden" name="chapterId" value="<%= chapterId %>">
+    <input type="hidden" name="tcode" value="<%= tcode %>">
+    <input type="hidden" name="tcodeId" value="<%= tcodeId %>">
+    <input type="hidden" name="chapter" value="<%= chapter %>">
+  
+    <label>
+      Title:
+      <input type="text" name="title" required>
+    </label>
+    <label>
+      Filename (slug):
+      <input
+        type="text"
+        name="filename"
+        pattern="[a-z0-9_-]+"
+        title="lowercase a-z, 0-9, dash or underscore"
+        required
+      >
+    </label>
+    <button type="submit">Add Exercise</button>
+  </form>
+  
+  <hr>
+  
+  <!-- SECTION B: Exercise Table -->
+  <% if (exercises && exercises.length > 0) { %>
+    <h3>Exercises</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Filename</th>
+          <th>Title</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% exercises.forEach(ex => { %>
+          <tr>
+            <td><%= ex.id %></td>
+            <td><%= ex.filename %></td>
+            <td><%= ex.name %></td>
+            <td>
+              <form
+                method="POST"
+                action="/admin/exercise/<%= ex.id %>/delete?tcode=<%= tcode %>&tcodeId=<%= tcodeId %>&chapter=<%= chapter %>&chapterId=<%= chapterId %>"
+                style="display:inline"
+              >
+                <button type="submit" class="btn-sm" onclick="return confirm('Delete this exercise?')">Delete</button>
+              </form>
+  
+              <a
+              href="/admin/exercise?tcode=<%= tcode %>&tcodeId=<%= tcodeId %>&chapter=<%= chapter %>&chapterId=<%= chapterId %>&edit=<%= ex.id %>"
+              class="btn-sm"
+            >
+              Edit
+            </a>
+            
+            <a
+              href="/admin/question?tcode=<%= tcode %>&tcodeId=<%= tcodeId %>&chapter=<%= chapter %>&chapterId=<%= chapterId %>&exercise=<%= ex.filename %>&exerciseId=<%= ex.id %>"
+              class="btn-sm"
+            >
+              AddQ
+            </a>
+            
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No exercises for this chapter yet.</p>
+  <% } %>
+  

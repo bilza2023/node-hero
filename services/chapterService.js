@@ -10,17 +10,17 @@ function validateFilename(filename) {
 }
 
 // CREATE: Add a chapter under a given tcodeName
-async function createChapter(tcodeName, data) {
-  debugger;
+async function createChapter(tcodeId, data) {
   const { title, filename } = data;
   validateFilename(filename);
 
   const tcode = await prisma.tcode.findUnique({
-    where: { tcodeName },
+    where: { id: tcodeId },
     include: { chapters: true }
   });
+
   if (!tcode) {
-    throw new Error(`Tcode '${tcodeName}' not found.`);
+    throw new Error(`Tcode ID ${tcodeId} not found.`);
   }
 
   if (tcode.chapters.some(ch => ch.filename === filename)) {
@@ -35,6 +35,7 @@ async function createChapter(tcodeName, data) {
     }
   });
 }
+
 
 // READ: List chapters for a given tcodeName
 async function getChaptersForTcode(tcodeName) {

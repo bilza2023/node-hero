@@ -10,20 +10,17 @@ function validateFilename(name) {
   }
 }
 
-// CREATE: Add exercise under chapter (requires tcodeName + chapterFilename)
-async function createExercise(tcodeName, chapterFilename, data) {
+// CREATE: Add exercise under chapter by chapterId
+async function createExercise(chapterId, data) {
   validateFilename(data.filename);
 
-  const chapter = await prisma.chapter.findFirst({
-    where: {
-      filename: chapterFilename,
-      tcode: { tcodeName }
-    },
+  const chapter = await prisma.chapter.findUnique({
+    where: { id: chapterId },
     include: { exercises: true }
   });
 
   if (!chapter) {
-    throw new Error(`Chapter '${chapterFilename}' not found in '${tcodeName}'.`);
+    throw new Error(`Chapter ID ${chapterId} not found.`);
   }
 
   const exists = chapter.exercises.find(ex => ex.filename === data.filename);
@@ -33,73 +30,27 @@ async function createExercise(tcodeName, chapterFilename, data) {
 
   return prisma.exercise.create({
     data: {
-      ...data,
+      name: data.title,
+      filename: data.filename,
       chapterId: chapter.id
     }
   });
 }
 
-// READ: Get exercise by internal ID
+// READ: Get all exercises for a chapter
+async function getExercisesForChapter(chapterId) {
+  return prisma.exercise.findMany({
+    where: { chapterId },
+    orderBy: { id: 'asc' }
+  });
+}
+
+// READ: Get exercise by ID
 async function getExerciseById(id) {
   return prisma.exercise.findUnique({ where: { id } });
 }
 
-// READ: Get by tcode + chapter + exercise filename
-async function getExerciseByFilename(tcodeName, chapterFilename, exerciseFilename) {
-  return prisma.exercise.findFirst({
-    where: {
-      filename: exerciseFilename,
-      chapter: {
-        filename: chapterFilename,
-        tcode: { tcodeName }
-      }
-    }
-  });
-}
-
-// READ: Get exercise with its questions (no .content)
-async function getExerciseQuestions(tcodeName, chapterFilename, exerciseFilename) {
-  return prisma.exercise.findFirst({
-    where: {
-      filename: exerciseFilename,
-      chapter: {
-        filename: chapterFilename,
-        tcode: { tcodeName }
-      }
-    },
-    include: {
-      questions: {
-        orderBy: { id: 'asc' },
-        select: {
-          id: true,
-          name: true,
-          filename: true,
-          type: true
-        }
-      }
-    }
-  });
-}
-
-// READ: Get exercise with full question content
-async function getExerciseQuestionsWithContent(tcodeName, chapterFilename, exerciseFilename) {
-  return prisma.exercise.findFirst({
-    where: {
-      filename: exerciseFilename,
-      chapter: {
-        filename: chapterFilename,
-        tcode: { tcodeName }
-      }
-    },
-    include: {
-      questions: {
-        orderBy: { id: 'asc' }
-      }
-    }
-  });
-}
-
-// UPDATE: Cannot change filename
+// UPDATE: Only allow title update
 async function updateExercise(id, data) {
   if ('filename' in data) {
     throw new Error('Exercise filename cannot be changed.');
@@ -107,11 +58,11 @@ async function updateExercise(id, data) {
 
   return prisma.exercise.update({
     where: { id },
-    data
+    data: { name: data.title }
   });
 }
 
-// DELETE: Only if no questions
+// DELETE: Only if exercise has no questions
 async function deleteExercise(id) {
   const questions = await prisma.question.findMany({
     where: { exerciseId: id }
@@ -126,10 +77,8 @@ async function deleteExercise(id) {
 
 module.exports = {
   createExercise,
+  getExercisesForChapter,
   getExerciseById,
-  getExerciseByFilename,
-  getExerciseQuestions,
-  getExerciseQuestionsWithContent,
   updateExercise,
   deleteExercise
 };
