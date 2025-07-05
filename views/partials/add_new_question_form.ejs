@@ -68,6 +68,14 @@
         <input type="hidden" name="exercise"   value="<%= exercise %>">
       
         <div class="form-group">
+          <label for="type">Type</label>
+          <select id="type" name="type" required>
+            <option value="slide">Slide</option>
+            <option value="md">Md</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
           <label for="title">Title</label>
           <input id="title" type="text" name="title" placeholder="Enter question title" required>
         </div>
@@ -75,19 +83,6 @@
         <div class="form-group">
           <label for="filename">Filename (slug)</label>
           <input id="filename" type="text" name="filename" placeholder="e.g. question_1" pattern="[a-z0-9_-]+" required>
-        </div>
-      
-        <div class="form-group">
-          <label for="type">Type</label>
-          <select id="type" name="type" required>
-            <option value="slide">Slide</option>
-            <option value="md">Md</option>
-          </select>
-        </div>
-      
-        <div class="form-group">
-          <label for="content">Content (JSON)</label>
-          <textarea id="content" name="content" ></textarea>
         </div>
       
         <div class="form-group">
