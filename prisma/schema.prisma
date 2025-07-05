@@ -32,7 +32,7 @@ model Tcode {
 
 model Chapter {
   id          Int     @id @default(autoincrement())
-  filename    String
+  filename    String  @unique
   name        String
   description String?
   image       String?
@@ -49,7 +49,7 @@ model Chapter {
 
 model Exercise {
   id          Int     @id @default(autoincrement())
-  filename    String
+  filename    String  @unique
   name        String
   description String?
   image       String?

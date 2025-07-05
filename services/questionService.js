@@ -1,55 +1,74 @@
 // services/questionService.js
 
-const prisma = require('../db');
+const prisma   = require('../db');
+const slugify  = require('slugify');
 
-// Validation
+// Validate URL-safe filename format
 function validateFilename(name) {
   if (!/^[a-z0-9_-]+$/.test(name)) {
-    throw new Error('Invalid filename: must be lowercase, URL-safe, and use only a-z, 0-9, -, _');
+    throw new Error(
+      'Invalid filename: must be lowercase, URL-safe, and use only a-z, 0-9, -, _'
+    );
   }
 }
 
 /**
- * Fetch a single question by ID
- */
-async function getQuestionById(id) {
-  return prisma.question.findUnique({ where: { id } });
-}
-
-/**
  * CREATE: add new question including JSON content
+ * – System generates a global slug from title + parent hierarchy
+ * – Enforces global uniqueness
  */
 async function createQuestion(exerciseId, data) {
-  validateFilename(data.filename);
+  const { title, type, content } = data;
 
+  // 1. Fetch parent exercise → chapter → tcode for hierarchy
   const exercise = await prisma.exercise.findUnique({
     where: { id: exerciseId },
-    include: { questions: true }
+    include: {
+      chapter: {
+        include: {
+          tcode: true
+        }
+      }
+    }
   });
   if (!exercise) {
     throw new Error(`Exercise ID ${exerciseId} not found.`);
   }
 
-  if (exercise.questions.some(q => q.filename === data.filename)) {
-    throw new Error(`Question filename '${data.filename}' already exists in this exercise.`);
+  const tcodeSlug     = exercise.chapter.tcode.tcodeName;
+  const chapterSlug   = exercise.chapter.filename;
+  const exerciseSlug  = exercise.filename;
+
+  // 2. Generate question‐level slug from title
+  const questionSlug = slugify(title, { lower: true, strict: true });
+  // 3. Combine into global filename
+  const filename = `${tcodeSlug}__${chapterSlug}__${exerciseSlug}__${questionSlug}`;
+  validateFilename(filename);
+
+  // 4. Enforce global uniqueness
+  const existing = await prisma.question.findUnique({ where: { filename } });
+  if (existing) {
+    throw new Error(`Question filename '${filename}' already exists.`);
   }
 
+  // 5. Parse JSON content if provided
   let parsedContent = null;
-  if (data.content) {
+  if (content) {
     try {
-      parsedContent = JSON.parse(data.content);
+      parsedContent = JSON.parse(content);
     } catch {
       throw new Error('Invalid JSON in content field.');
     }
   }
 
+  // 6. Create record
   return prisma.question.create({
     data: {
-      name: data.title,
-      filename: data.filename,
-      type: data.type || 'slide',
-      content: parsedContent,
-      exerciseId: exercise.id
+      name:       title,
+      filename,
+      type:       type || 'slide',
+      content:    parsedContent,
+      exerciseId
     }
   });
 }
@@ -59,23 +78,29 @@ async function createQuestion(exerciseId, data) {
  */
 async function getQuestionsForExercise(exerciseId) {
   return prisma.question.findMany({
-    where: { exerciseId },
+    where:   { exerciseId },
     orderBy: { id: 'asc' }
   });
 }
 
 /**
- * UPDATE: modify title, type, and content
+ * FETCH a single question by ID
+ */
+async function getQuestionById(id) {
+  return prisma.question.findUnique({ where: { id } });
+}
+
+/**
+ * UPDATE: modify title, type, and content (filename immutable)
  */
 async function updateQuestion(id, data) {
-  const updateData = {};
+  if ('filename' in data) {
+    throw new Error('Question filename cannot be changed.');
+  }
 
-  if ('title' in data) {
-    updateData.name = data.title;
-  }
-  if ('type' in data) {
-    updateData.type = data.type;
-  }
+  const updateData = {};
+  if ('title' in data)   updateData.name    = data.title;
+  if ('type' in data)    updateData.type    = data.type;
   if ('content' in data) {
     if (data.content) {
       try {
@@ -90,21 +115,21 @@ async function updateQuestion(id, data) {
 
   return prisma.question.update({
     where: { id },
-    data: updateData
+    data:  updateData
   });
 }
 
 /**
- * DELETE
+ * DELETE a question
  */
 async function deleteQuestion(id) {
   return prisma.question.delete({ where: { id } });
 }
 
 module.exports = {
-  getQuestionById,
   createQuestion,
   getQuestionsForExercise,
+  getQuestionById,
   updateQuestion,
   deleteQuestion
 };

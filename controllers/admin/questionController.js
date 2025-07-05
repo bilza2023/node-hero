@@ -44,10 +44,13 @@ exports.create = async (req, res) => {
     exercise
   } = req.body;
 
+  // ✅ Construct global filename
+  const globalFilename = `${tcode}__${chapter}__${exercise}__${filename}`;
+
   try {
     await questionService.createQuestion(Number(exerciseId), {
       title,
-      filename,
+      filename: globalFilename,
       type,
       content
     });
@@ -62,6 +65,7 @@ exports.create = async (req, res) => {
     `&exercise=${encodeURIComponent(exercise)}&exerciseId=${exerciseId}`
   );
 };
+
 
 exports.update = async (req, res) => {
   const id = parseInt(req.params.id, 10);

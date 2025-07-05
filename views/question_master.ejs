@@ -2,51 +2,16 @@
 <head>
   <link rel="stylesheet" href="/css/water.css">
   <style>
-  /* Override Water.css’s body max-width for the navbar */
-  nav#nav {
-    /* Make navbar span the entire viewport */
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    box-sizing: border-box;
-
-    /* Re-apply your existing nav styles */
-    padding: 1rem;
-    background: #2d2d2d;
-    color: #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-    .btn-sm {
-      font-size: 0.8rem;
-      padding: 0.2rem 0.5rem;
-      margin-right: 0.3rem;
-      display: inline-block;
-      border: 1px solid #888;
-      border-radius: 4px;
-      background: #f3f3f3;
-      color: #222;
-      text-decoration: none;
-    }
-    .btn-sm:hover {
-      background: #ddd;
-      cursor: pointer;
-    }
-
-    /* Ensure textarea and button are on their own rows */
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    .form-group textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 0.5rem;
-    }
-    .form-group button {
-      display: block;
-      margin-top: 0.5rem;
-    }
+    nav#nav { width:100vw; margin-left:calc(50% - 50vw); padding:1rem;
+              background:#2d2d2d; color:#f0f0f0; display:flex;
+              justify-content:space-between; align-items:center; }
+    .btn-sm { font-size:.8rem; padding:.2rem .5rem; margin-right:.3rem;
+              border:1px solid #888; border-radius:4px; background:#f3f3f3;
+              color:#222; text-decoration:none; }
+    .btn-sm:hover { background:#ddd; cursor:pointer; }
+    .form-group { margin-bottom:1rem; }
+    .form-group textarea { width:100%; min-height:120px; padding:.5rem; }
+    .form-group button { display:block; margin-top:.5rem; }
   </style>
 </head>
 
@@ -54,18 +19,17 @@
   <%- include('./partials/navbar') %>
   <h1>Manage Questions</h1>
   <%- include('./partials/flash.ejs') %>
-  
+
   <h2>Exercise: <%= exercise %> (Chapter: <%= chapter %>, Tcode: <%= tcode %>)</h2>
-  
+
+  <!-- Add-question form -->
   <%- include('./partials/add_new_question_form.ejs') %>
- 
+
   <hr>
 
-  <!-- SECTION B: Question Table -->
   <% if (questions && questions.length > 0) { %>
-
-  <%- include('./partials/questions_list.ejs') %>
- 
+    <!-- Questions list (unchanged) -->
+    <%- include('./partials/questions_list.ejs') %>
   <% } else { %>
     <p>No questions for this exercise yet.</p>
   <% } %>
