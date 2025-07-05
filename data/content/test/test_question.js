@@ -1,9 +1,5 @@
 
 
-
-
-
-
 deckbuilder.s.titleSlide(10, [
     { name: "title", content: "--Test--Test--Test", showAt: 0 }
   ]);
