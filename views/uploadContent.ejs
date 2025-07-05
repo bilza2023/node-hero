@@ -1,0 +1,77 @@
+<!-- views/uploadContent.ejs -->
+
+<!-- Layout Head -->
+<head>
+    <link rel="stylesheet" href="/css/water.css">
+    <style>
+      /* Override Water.css’s body max-width for the navbar */
+      nav#nav {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        box-sizing: border-box;
+        padding: 1rem;
+        background: #2d2d2d;
+        color: #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+  
+      .btn-sm {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem;
+        display: inline-block;
+        border: 1px solid #888;
+        border-radius: 4px;
+        background: #00bfff;
+        color: #000;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .btn-sm:hover {
+        background: #009fd1;
+      }
+  
+      .form-group {
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <%- include('./partials/navbar') %>
+  
+    <div class="form-group">
+      <h1>Upload Content Files</h1>
+    </div>
+  
+    <div class="form-group">
+      <form method="POST" action="/admin/uploadContent">
+        <button type="submit" class="btn-sm">Import DeckBuilder Content</button>
+      </form>
+    </div>
+  
+    <% if (result) { %>
+      <div class="form-group">
+        <h2>Import Summary</h2>
+        <ul>
+          <li><strong>Total Files:</strong> <%= result.total %></li>
+          <li><strong>Matched:</strong> <%= result.matched %></li>
+          <li><strong>Updated:</strong> <%= result.updated %></li>
+          <li><strong>Errors:</strong> <%= result.errors.length %></li>
+        </ul>
+      </div>
+  
+      <% if (result.errors.length > 0) { %>
+        <div class="form-group">
+          <h3>Errors:</h3>
+          <ul>
+            <% result.errors.forEach(e => { %>
+              <li><code><%= e %></code></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
+    <% } %>
+  </body>
+  

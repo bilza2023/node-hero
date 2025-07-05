@@ -10,6 +10,55 @@ function validateTcodeName(tcodeName) {
   }
 }
 
+// full syllabus
+async function getFullSyllabusExport(tcodeName) {
+  // fetch chapters + exercises
+  const tcode = await getSyllabusShell(tcodeName);
+  if (!tcode) {
+    throw new Error(`Tcode '${tcodeName}' not found.`);
+  }
+
+  // map chapters → exercises
+  const chapters = tcode.chapters.map(ch => ({
+    filename: ch.filename,
+    name: ch.name,
+    exercises: ch.exercises.map(ex => ({
+      filename: ex.filename,
+      name: ex.name
+    }))
+  }));
+
+  // flatten questions across all exercises
+  const questions = [];
+  for (const ch of tcode.chapters) {
+    for (const ex of ch.exercises) {
+      const qList = await prisma.question.findMany({
+        where: { exerciseId: ex.id },
+        select: { filename: true, name: true, type: true }
+      });
+      for (const q of qList) {
+        questions.push({
+          filename: q.filename,
+          name: q.name,
+          type: q.type,
+          chapterFilename: ch.filename,
+          exerciseFilename: ex.filename,
+          tcodeName: tcode.tcodeName
+        });
+      }
+    }
+  }
+
+  return {
+    tcodeName:   tcode.tcodeName,
+    filename:    tcode.tcodeName,
+    description: tcode.description || '',
+    image:       tcode.image || '',
+    chapters,
+    questions
+  };
+}
+
 // CREATE
 async function createTcode(data) {
   validateTcodeName(data.tcodeName);
@@ -152,5 +201,6 @@ module.exports = {
   getTcodeExercise,
   getTcodeExerciseWContent,
   updateTcode,
-  deleteTcode
+  deleteTcode,
+  getFullSyllabusExport 
 };

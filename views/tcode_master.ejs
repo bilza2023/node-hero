@@ -148,6 +148,20 @@
               <form method="POST" action="/admin/tcode/<%= tcode.id %>/delete" style="display:inline">
                 <button type="submit" onclick="return confirm('Delete this tcode?')">Delete</button>
               </form>
+
+               <!-- PRINT SYLLABUS BUTTON -->
+              <button
+                type="button"
+                class="btn-sm"
+                onclick="
+                  fetch('/admin/tcode/print?tcode=<%= tcode.tcodeName %>')
+                    .then(res => res.json())
+                    .then(data => console.log({ '<%= tcode.tcodeName %>': data }))
+                    .catch(err => console.error('Print error:', err));
+                "
+              >
+                Print
+              </button>
             </td>
           </tr>
         <% }) %>

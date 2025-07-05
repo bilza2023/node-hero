@@ -50,6 +50,8 @@ app.use('/admin/tcode', adminTcodeRoutes);
 app.use('/admin/chapter', adminChapterRoutes);
 app.use('/admin/exercise', exerciseRoutes);
 app.use('/admin/question', questionRoutes);
+app.use('/admin/uploadContent', require('./routes/admin/uploadContent'));
+
 
 app.use('/', indexRoutes);
 app.use('/', authRoutes);

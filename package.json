@@ -26,6 +26,7 @@
     "multer": "^2.0.1",
     "prisma": "^6.10.1",
     "sharp": "^0.34.2",
+    "taleem-pivot-deckbuilder": "^0.9.1",
     "zod": "^3.25.67"
   },
   "devDependencies": {

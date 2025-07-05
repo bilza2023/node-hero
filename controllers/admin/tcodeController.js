@@ -55,3 +55,17 @@ exports.delete = async (req, res) => {
   }
   res.redirect('/admin/tcode');
 };
+
+exports.print = async (req, res) => {
+  const tcodeName = req.query.tcode;
+  try {
+    const syllabus = await tcodeService.getFullSyllabusExport(tcodeName);
+    // wrap under the key for direct copy-paste
+    const exportObj = { [tcodeName]: syllabus };
+    // respond with JS snippet or JSON—here we log on client
+    res.json(exportObj);
+  } catch (err) {
+    console.error('PrintSyllabus error:', err);
+    res.status(500).send(err.message);
+  }
+};
