@@ -1,0 +1,13 @@
+
+model Question {
+  id         Int      @id @default(autoincrement()) // internal index
+  filename   String   @unique                       // canonical slug (e.g., "gold_eq_01")
+  deck       Json                                   // parsed ZodDeckV1 object
+
+  name        String                                 // from .addDetails()
+  description String
+  tags        Json
+  status      String
+  createdAt   DateTime
+  editedAt    DateTime
+}

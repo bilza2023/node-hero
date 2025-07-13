@@ -5,7 +5,7 @@ const path = require('path');
 
 // Resolve paths relative to this script’s folder
 const SOURCE_PATH = path.resolve(__dirname, '../prisma/dev.db');
-const DEST_PATH   = path.resolve(__dirname, '../../ui/src/lib/data/dev.db');
+const DEST_PATH   = path.resolve(__dirname, '../../ui/data/dev.db');
 
 console.log('SOURCE_PATH:', SOURCE_PATH);
 console.log('DEST_PATH:  ', DEST_PATH);

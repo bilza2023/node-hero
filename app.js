@@ -53,6 +53,9 @@ app.use('/admin/question', questionRoutes);
 app.use('/admin/uploadContent', require('./routes/admin/uploadContent'));
 
 
+app.use('/player', require('./routes/player'));
+
+
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/', uploadRoutes);
