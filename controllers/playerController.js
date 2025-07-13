@@ -8,8 +8,8 @@ function showPlayer(req, res) {
   defineDeck(builder);              // fills the builder
   const deck = builder.build();     // extracts the full JSON
 
-  const firstSlide = deck.deck[0];  // just to verify rendering
-  res.render(path.join('..', 'player', 'views', 'Title'), { deck: firstSlide });
+  const firstSlide = deck.deck;  // just to verify rendering
+  res.render(path.join('..', 'player', 'views', 'index'), { deck: firstSlide });
 }
 
 module.exports = { showPlayer };
