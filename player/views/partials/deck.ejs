@@ -1,9 +1,11 @@
-<!-- /player/views/partials/deck.ejs -->
-<div id="deck-container">
-    <% deck.forEach(function(slide, i) { %>
-      <div class="slide" data-start="<%= slide.start %>" data-end="<%= slide.end %>" id="slide-<%= i %>">
-        <pre><code><%= JSON.stringify(slide, null, 2) %></code></pre>
-      </div>
-    <% }) %>
-  </div>
+
+
+<% deck.forEach(function(slide, i) { %>
+    <% if (slide.type === 'eq') { %>
+      <%- include('./eq_slide', { slide, i }) %>
+    <% } else { %>
+      <!-- other slide types -->
+      <div class="slide" ...>...</div>
+    <% } %>
+  <% }) %>
   
