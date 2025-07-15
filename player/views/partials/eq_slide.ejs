@@ -1,15 +1,7 @@
-<!-- /partials/eq_slide.ejs -->
-<div class="slide eq-slide" data-start="<%= slide.start %>" data-end="<%= slide.end %>">
-  <% slide.data.forEach(function(line) { %>
-    <div class="eq-line" data-showat="<%= line.showAt %>">
-      <div class="main-content <%= line.type %>"><%= line.content %></div>
-      <% if (line.spItems) { %>
-        <div class="sidebar">
-          <% line.spItems.forEach(function(sp) { %>
-            <div class="<%= sp.type %>"><%= sp.content %></div>
-          <% }) %>
-        </div>
-      <% } %>
-    </div>
-  <% }) %>
+<!-- /player/views/partials/eq_slide.ejs -->
+<div class="slide eq-slide"
+     data-start="<%= slide.start %>"
+     data-end="<%= slide.end %>"
+     data-raw='<%- JSON.stringify(slide.data).replace(/'/g, "&#39;") %>'>
+  <!-- eqSlide.js will render the lines and sidebar here -->
 </div>

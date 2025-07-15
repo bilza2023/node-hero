@@ -1,5 +1,3 @@
-
-
 // public/js/Player.js
 export default class Player {
   constructor(soundUrl) {
@@ -31,6 +29,12 @@ export default class Player {
     this._clearTickLoop();
     this._intervalId = setInterval(() => {
       const t = this.sound.seek();
+
+      // 🔥 New global broadcast for slide modules
+      document.dispatchEvent(new CustomEvent('playerTick', {
+        detail: { currentTime: t }
+      }));
+
       this._tickCbs.forEach(fn => fn(t));
     }, interval);
   }

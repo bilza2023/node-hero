@@ -62,4 +62,24 @@ body {
     background: #fff8c4;
     border-left: 4px solid #f0c000;
   }
-  
+  /* public/css/player.css */
+
+/* All lines by default */
+.eq-line {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  background-color: white;
+  font-size: 1.25rem;
+  opacity: 0.6;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Active line (highlighted) */
+.eq-line.active {
+  background-color: #9dec96;
+  border-left: 4px solid #444;
+  font-size: 1.75rem;
+  opacity: 1;
+}
+
