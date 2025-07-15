@@ -1,75 +1,15 @@
-
-<!-- /player/views/partials/eq_slide.ejs -->
-<style>
-/* /css/player.css */
-
-/* 1. Make the slide a two-column flex box */
-.slide.eq-slide {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-/* 2. Left column: list of all lines */
-.eq-lines {
-  flex: 2;
-  max-height: 70vh;     /* adjust as needed */
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-  padding-right: 1rem;
-}
-
-/* 3. Individual line styling */
-.eq-line {
-  padding: 0.5rem;
-}
-.eq-line.current-line {
-  background-color: #f0f8ff;
-  border-left: 4px solid #007acc;
-}
-
-/* 4. Right column: sidebar of spItems */
-.eq-sidebar {
-  flex: 1;
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-left: 1rem;
-}
-
-/* 5. Sidebar item types */
-.eq-sidebar .spHeading {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-.eq-sidebar .spText,
-.eq-sidebar .spMath {
-  margin-bottom: 0.75rem;
-  font-style: italic;
-}
-.eq-sidebar .spImage img {
-  max-width: 100%;
-  display: block;
-  margin: 0.5rem 0;
-}
-
-</style>
-
-
-
-<div class="slide eq-slide" data-start="<%= slide.start %>" data-end="<%= slide.end %>" id="slide-<%= i %>">
-  <div class="eq-lines">
-    <% slide.data.forEach(function(line, j) { %>
-      <div class="eq-line" 
-           data-showat="<%= line.showAt %>" 
-           data-index="<%= j %>" 
-           data-spitems='<%- JSON.stringify(line.spItems || []) %>' 
-           id="eq-line-<%= i %>-<%= j %>">
-        <pre class="eq-content"><%= line.content %></pre>
-      </div>
-    <% }) %>
-  </div>
-  <div class="eq-sidebar" id="eq-sidebar-<%= i %>">
-    <!-- dynamically filled via JS based on current line -->
-  </div>
+<!-- /partials/eq_slide.ejs -->
+<div class="slide eq-slide" data-start="<%= slide.start %>" data-end="<%= slide.end %>">
+  <% slide.data.forEach(function(line) { %>
+    <div class="eq-line" data-showat="<%= line.showAt %>">
+      <div class="main-content <%= line.type %>"><%= line.content %></div>
+      <% if (line.spItems) { %>
+        <div class="sidebar">
+          <% line.spItems.forEach(function(sp) { %>
+            <div class="<%= sp.type %>"><%= sp.content %></div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  <% }) %>
 </div>

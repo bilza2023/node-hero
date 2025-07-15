@@ -17,7 +17,6 @@ const galleryRoutes       = require('./routes/gallery');
 const commentRoutes       = require('./routes/comments');
 
 
-debugger;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -43,7 +42,10 @@ app.use((req, res, next) => {
 
 // View Engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', [
+  path.join(__dirname, 'views'),
+  path.join(__dirname, 'player', 'views')
+]);
 
 // Routes
 app.use('/admin/tcode', adminTcodeRoutes);

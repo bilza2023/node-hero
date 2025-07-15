@@ -5,13 +5,14 @@
   <meta charset="UTF-8" />
   <title>Player</title>
   <link rel="stylesheet" href="/css/player.css">
+
 </head>
 <body>
   <h1>Player</h1>
 
   <%- include('partials/nav') %>
 
-  <%- include('partials/deck', { deck }) %>
+  <%- include('partials/deck', {deck: fullDeck.deck} ) %>
 
   <!-- Howler UMD build -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>

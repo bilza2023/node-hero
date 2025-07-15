@@ -1,15 +1,21 @@
-// /controllers/playerController.js
+// /controllers/playerController.js :contentReference[oaicite:0]{index=0}
 const path = require('path');
 const DeckBuilder = require('../player/deckbuilder/Deckbuilder');
 const { defineDeck } = require('../player/deck');
 
 function showPlayer(req, res) {
+  // 1. Build the deck
   const builder = new DeckBuilder();
-  defineDeck(builder);              // fills the builder
-  const deck = builder.build();     // extracts the full JSON
+  defineDeck(builder);
+  const fullDeck = builder.build();
 
-  const firstSlide = deck.deck;  // just to verify rendering
-  res.render(path.join('..', 'player', 'views', 'index'), { deck: firstSlide });
+  // 2. Extract the slides array
+  const deck = fullDeck.deck;
+  console.log('🚀 deck (server):', deck);
+
+  // 3. Render the player index — Express is already set up
+  //    to look in player/views, so this works:
+  res.render('index', { fullDeck });
 }
 
 module.exports = { showPlayer };
